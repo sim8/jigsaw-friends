@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 import { useMemo } from 'react';
-import Image from 'next/image'
+import Image from 'next/image';
 import useJigsawState from '../hooks/useJigsawState';
 import { JigsawConfig } from '../types';
 import { getPieceFromKey } from '../utils/pieces';
@@ -18,8 +18,7 @@ const CanvasWrapper = styled.div`
   height: ${CANVAS_HEIGHT}px;
   width: ${CANVAS_WIDTH}px;
   position: relative;
-`
-
+`;
 
 export default function JigsawCanvas() {
   const jigsawConfig: JigsawConfig = Object.freeze({
@@ -29,14 +28,21 @@ export default function JigsawCanvas() {
     jigsawHeight: JIGSAW_HEIGHT,
     columns: COLUMNS,
     rows: ROWS,
-  })
+  });
 
+  const jigsawState = useJigsawState(jigsawConfig);
 
-  const jigsawState = useJigsawState(jigsawConfig)
-
-  return <CanvasWrapper>
-    {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
-      return <Piece pieceKey={pieceKey} pieceState={pieceState} jigsawConfig={jigsawConfig}/>
-    })}
-  </CanvasWrapper>;
+  return (
+    <CanvasWrapper>
+      {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
+        return (
+          <Piece
+            pieceKey={pieceKey}
+            pieceState={pieceState}
+            jigsawConfig={jigsawConfig}
+          />
+        );
+      })}
+    </CanvasWrapper>
+  );
 }
