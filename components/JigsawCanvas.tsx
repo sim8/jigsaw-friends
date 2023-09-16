@@ -1,15 +1,16 @@
 import styled from 'styled-components';
 import useJigsawState from '../hooks/useJigsawState';
-import { JigsawConfig, PieceKey } from '../types';
+import { DragState, JigsawConfig } from '../types';
 import Piece from './Piece';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { getMousePosWithinElement } from '../utils/dom';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
 const JIGSAW_WIDTH = 400;
 const JIGSAW_HEIGHT = 300;
-const COLUMNS = 3;
-const ROWS = 3;
+const COLUMNS = 1;
+const ROWS = 1;
 
 const CanvasWrapper = styled.div`
   outline: 7px solid #0099ff;
@@ -19,6 +20,8 @@ const CanvasWrapper = styled.div`
 `;
 
 export default function JigsawCanvas() {
+  const canvasRef = useRef<HTMLDivElement>();
+
   const jigsawConfig: JigsawConfig = Object.freeze({
     canvasWidth: CANVAS_WIDTH,
     canvasHeight: CANVAS_HEIGHT,
@@ -28,14 +31,26 @@ export default function JigsawCanvas() {
     rows: ROWS,
   });
 
-  const jigsawState = useJigsawState(jigsawConfig);
+  const { jigsawState, setPieceState } = useJigsawState(jigsawConfig);
 
-  const [draggingKey, setDraggingKey] = useState<PieceKey | null>(null);
+  const [dragState, setDragState] = useState<DragState | null>(null);
 
   return (
     <CanvasWrapper
-      onMouseUp={() => setDraggingKey(null)}
-      onMouseLeave={() => setDraggingKey(null)}
+      ref={canvasRef}
+      onMouseUp={() => setDragState(null)}
+      onMouseLeave={() => setDragState(null)}
+      onMouseMove={(e) => {
+        if (dragState) {
+          const { top, left } = getMousePosWithinElement(e, canvasRef.current);
+          const pieceTop = top - dragState.pieceMouseOffsetY;
+          const pieceLeft = left - dragState.pieceMouseOffsetX;
+          setPieceState(dragState.draggingPieceKey, {
+            top: pieceTop,
+            left: pieceLeft,
+          });
+        }
+      }}
     >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
@@ -44,8 +59,21 @@ export default function JigsawCanvas() {
             pieceKey={pieceKey}
             pieceState={pieceState}
             jigsawConfig={jigsawConfig}
-            onMouseDown={() => setDraggingKey(pieceKey)}
-            isDragging={draggingKey === pieceKey}
+            onMouseDown={(e) => {
+              const { top, left } = getMousePosWithinElement(
+                e,
+                canvasRef.current,
+              );
+              const pieceMouseOffsetX = left - pieceState.left;
+              const pieceMouseOffsetY = top - pieceState.top;
+
+              setDragState({
+                draggingPieceKey: pieceKey,
+                pieceMouseOffsetX,
+                pieceMouseOffsetY,
+              });
+            }}
+            isDragging={dragState && dragState.draggingPieceKey === pieceKey}
           />
         );
       })}

@@ -5,6 +5,7 @@ import {
   getPieceHeight,
   getPieceWidth,
 } from '../utils/pieces';
+import { MouseEventHandler } from 'react';
 
 const PieceDiv = styled.div<{ isDragging: boolean }>`
   outline: 2px solid green;
@@ -18,7 +19,7 @@ type Props = {
   pieceState: PieceState;
   jigsawConfig: JigsawConfig;
   isDragging: boolean;
-  onMouseDown: React.MouseEventHandler;
+  onMouseDown: MouseEventHandler<HTMLElement>;
 };
 
 export default function Piece({
