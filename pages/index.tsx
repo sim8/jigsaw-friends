@@ -5,8 +5,12 @@ import {
   Title,
   Description,
 } from '../components/sharedstyles';
-import JigsawCanvas from '../components/JigsawCanvas';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const NoSSRJigsawCanvas = dynamic(() => import('../components/JigsawCanvas'), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
@@ -23,7 +27,7 @@ export default function Home() {
           <Link href="https://github.com/sim8/jigsaw-friends">GitHub</Link>
         </Description>
 
-        <JigsawCanvas />
+        <NoSSRJigsawCanvas />
       </Main>
     </Container>
   );
