@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { JigsawConfig, PieceKey, PieceState } from '../types';
 import {
   getPieceFromKey,
@@ -10,6 +11,12 @@ type Props = {
   pieceState: PieceState;
   jigsawConfig: JigsawConfig;
 };
+
+const PieceDiv = styled.div`
+  outline: 2px solid green;
+  background-image: url('images/test-image-1.jpg');
+  position: absolute;
+`;
 
 export default function Piece({ pieceKey, pieceState, jigsawConfig }: Props) {
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
@@ -26,18 +33,14 @@ export default function Piece({ pieceKey, pieceState, jigsawConfig }: Props) {
   const { top, left, rotation } = pieceState;
 
   return (
-    <div
+    <PieceDiv
       key={pieceKey}
       style={{
-        outline: '2px solid green',
-        backgroundImage: 'url("images/test-image-1.jpg")',
         backgroundSize: `${jigsawConfig.jigsawWidth}px ${jigsawConfig.jigsawHeight}px`,
         backgroundPositionX: pieceWidth * colIndex,
         backgroundPositionY: pieceHeight * rowIndex,
         width: pieceWidth,
         height: pieceHeight,
-
-        position: 'absolute',
         top,
         left,
         transform: `rotate(${rotation}deg)`,
