@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import useJigsawState from '../hooks/useJigsawState';
-import { JigsawConfig } from '../types';
+import { JigsawConfig, PieceKey } from '../types';
 import Piece from './Piece';
+import { useState } from 'react';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -29,8 +30,13 @@ export default function JigsawCanvas() {
 
   const jigsawState = useJigsawState(jigsawConfig);
 
+  const [draggingKey, setDraggingKey] = useState<PieceKey | null>(null);
+
   return (
-    <CanvasWrapper>
+    <CanvasWrapper
+      onMouseUp={() => setDraggingKey(null)}
+      onMouseLeave={() => setDraggingKey(null)}
+    >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
           <Piece
@@ -38,6 +44,8 @@ export default function JigsawCanvas() {
             pieceKey={pieceKey}
             pieceState={pieceState}
             jigsawConfig={jigsawConfig}
+            onMouseDown={() => setDraggingKey(pieceKey)}
+            isDragging={draggingKey === pieceKey}
           />
         );
       })}
