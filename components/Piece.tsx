@@ -1,8 +1,4 @@
 import { JigsawConfig, PieceKey, PieceState } from '../types';
-import styled from 'styled-components';
-import { useMemo } from 'react';
-import Image from 'next/image';
-import useJigsawState from '../hooks/useJigsawState';
 import {
   getPieceFromKey,
   getPieceHeight,

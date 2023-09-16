@@ -3,7 +3,8 @@ import { generateJigsawState } from '../lib/jigsawGeneration';
 import { JigsawConfig } from '../types';
 
 export default function useJigsawState(jigsawConfig: JigsawConfig) {
-  const [jigsawState, setJigsawState] = useState(() =>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [jigsawState, __setJigsawState] = useState(() =>
     generateJigsawState(jigsawConfig),
   );
 

@@ -1,9 +1,6 @@
 import styled from 'styled-components';
-import { useMemo } from 'react';
-import Image from 'next/image';
 import useJigsawState from '../hooks/useJigsawState';
 import { JigsawConfig } from '../types';
-import { getPieceFromKey } from '../utils/pieces';
 import Piece from './Piece';
 
 const CANVAS_WIDTH = 800;
@@ -37,6 +34,7 @@ export default function JigsawCanvas() {
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
           <Piece
+            key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
             jigsawConfig={jigsawConfig}
