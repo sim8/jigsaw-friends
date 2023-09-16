@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 import useJigsawState from '../hooks/useJigsawState';
-import { DragState, JigsawConfig } from '../types';
+import { DragPiece, JigsawConfig } from '../types';
 import Piece from './Piece';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getMousePosWithinElement } from '../utils/dom';
+import { keyboardShortcuts } from '../constants/keyboardShortcuts';
+import {
+  PIECE_ROTATION_AMOUNT,
+  PIECE_ROTATION_INTERVAL,
+} from '../constants/uiConfig';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -31,21 +36,63 @@ export default function JigsawCanvas() {
     rows: ROWS,
   });
 
-  const { jigsawState, setPieceState } = useJigsawState(jigsawConfig);
+  const { jigsawState, setPieceState, updatePieceRotation } =
+    useJigsawState(jigsawConfig);
 
-  const [dragState, setDragState] = useState<DragState | null>(null);
+  const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
+  const [rotating, setRotating] = useState<'clockwise' | 'anticlockwise'>(null);
+
+  const { draggingPieceKey } = dragPiece || {};
+
+  const updatePieceRotationInterval = useRef(null);
+
+  const cancelDrag = () => {
+    setDragPiece(null);
+    setRotating(null);
+    clearInterval(updatePieceRotationInterval.current);
+  };
+
+  useEffect(() => {
+    if (rotating) {
+      updatePieceRotationInterval.current = setInterval(() => {
+        updatePieceRotation(draggingPieceKey, (prev) =>
+          rotating === 'clockwise'
+            ? prev + PIECE_ROTATION_AMOUNT
+            : prev - PIECE_ROTATION_AMOUNT,
+        );
+      }, PIECE_ROTATION_INTERVAL);
+
+      return () => clearInterval(updatePieceRotationInterval.current);
+    }
+  }, [rotating, draggingPieceKey, updatePieceRotation]);
 
   return (
     <CanvasWrapper
       ref={canvasRef}
-      onMouseUp={() => setDragState(null)}
-      onMouseLeave={() => setDragState(null)}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (!draggingPieceKey) {
+          return;
+        }
+        const key = e.key.toLowerCase();
+
+        if (key === keyboardShortcuts.ROTATE_CLOCKWISE) {
+          setRotating('clockwise');
+        } else if (key === keyboardShortcuts.ROTATE_ANTICLOCKWISE) {
+          setRotating('anticlockwise');
+        }
+      }}
+      onKeyUp={() => {
+        setRotating(null);
+      }}
+      onMouseUp={() => cancelDrag()}
+      onMouseLeave={() => cancelDrag()}
       onMouseMove={(e) => {
-        if (dragState) {
+        if (dragPiece) {
           const { top, left } = getMousePosWithinElement(e, canvasRef.current);
-          const pieceTop = top - dragState.pieceMouseOffsetY;
-          const pieceLeft = left - dragState.pieceMouseOffsetX;
-          setPieceState(dragState.draggingPieceKey, {
+          const pieceTop = top - dragPiece.pieceMouseOffsetY;
+          const pieceLeft = left - dragPiece.pieceMouseOffsetX;
+          setPieceState(draggingPieceKey, {
             top: pieceTop,
             left: pieceLeft,
           });
@@ -67,13 +114,13 @@ export default function JigsawCanvas() {
               const pieceMouseOffsetX = left - pieceState.left;
               const pieceMouseOffsetY = top - pieceState.top;
 
-              setDragState({
+              setDragPiece({
                 draggingPieceKey: pieceKey,
                 pieceMouseOffsetX,
                 pieceMouseOffsetY,
               });
             }}
-            isDragging={dragState && dragState.draggingPieceKey === pieceKey}
+            isDragging={draggingPieceKey === pieceKey}
           />
         );
       })}

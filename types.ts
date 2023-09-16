@@ -22,7 +22,7 @@ export type JigsawConfig = {
   columns: number;
 };
 
-export type DragState = {
+export type DragPiece = {
   draggingPieceKey: PieceKey;
   pieceMouseOffsetX: number;
   pieceMouseOffsetY: number;

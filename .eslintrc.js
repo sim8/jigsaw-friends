@@ -7,6 +7,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
   ],
   overrides: [
     {
@@ -27,6 +28,8 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react'],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'error',
     '@typescript-eslint/no-unused-vars': 'error',
   },
 };
