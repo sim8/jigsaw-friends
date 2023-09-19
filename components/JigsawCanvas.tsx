@@ -14,8 +14,8 @@ const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
 const JIGSAW_WIDTH = 400;
 const JIGSAW_HEIGHT = 300;
-const COLUMNS = 1;
-const ROWS = 1;
+const COLUMNS = 3;
+const ROWS = 2;
 
 const CanvasWrapper = styled.div`
   outline: 7px solid #0099ff;
