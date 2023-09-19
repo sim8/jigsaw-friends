@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { getDatabase } from 'firebase/database';
 
 export const createFirebaseApp = () => {
   const firebaseConfig = {
@@ -10,6 +11,7 @@ export const createFirebaseApp = () => {
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   };
 
   if (getApps().length <= 0) {
@@ -20,6 +22,8 @@ export const createFirebaseApp = () => {
       if ('measurementId' in firebaseConfig) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const analytics = getAnalytics();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const database = getDatabase(app);
       }
     }
     return app;
