@@ -21,3 +21,9 @@ export type JigsawConfig = {
   rows: number;
   columns: number;
 };
+
+export type DragPiece = {
+  draggingPieceKey: PieceKey;
+  pieceMouseOffsetX: number;
+  pieceMouseOffsetY: number;
+};
