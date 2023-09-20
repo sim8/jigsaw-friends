@@ -6,8 +6,13 @@ import {
   Description,
 } from '../components/sharedstyles';
 import Link from 'next/link';
+import { useCallback } from 'react';
+import { getFirebase } from '../firebase/clientApp';
 
 export default function Home() {
+  const actuallyPlay = useCallback(() => {
+    console.log('working? ', !!getFirebase().app);
+  }, []);
   return (
     <Container>
       <Head>
@@ -25,6 +30,9 @@ export default function Home() {
         <Link href="/play/123" style={{ fontSize: '64px' }}>
           Play
         </Link>
+        <button style={{ fontSize: '64px' }} onClick={() => actuallyPlay()}>
+          Actually play
+        </button>
       </Main>
     </Container>
   );
