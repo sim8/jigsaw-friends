@@ -8,10 +8,22 @@ import {
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { getFirebase } from '../firebase/clientApp';
+import { ref, child, push } from 'firebase/database';
 
 export default function Home() {
   const actuallyPlay = useCallback(() => {
-    console.log('working? ', !!getFirebase().app);
+    const db = getFirebase().database;
+
+    const userData = {
+      name: 'Sim',
+    };
+
+    // Get a key for a new user.
+    const newUserKey = push(child(ref(db), 'users'), userData).key;
+    console.log(
+      '🚀 ~ file: index.tsx:23 ~ actuallyPlay ~ newUserKey:',
+      newUserKey,
+    );
   }, []);
   return (
     <Container>
