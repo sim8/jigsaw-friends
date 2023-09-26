@@ -9,7 +9,7 @@ import { MouseEventHandler } from 'react';
 
 const PieceDiv = styled.div<{ isDragging: boolean }>`
   outline: 2px solid green;
-  background-image: url('images/test-image-1.jpg');
+  background-image: url('/images/test-image-1.jpg');
   position: absolute;
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
 `;
