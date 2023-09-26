@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getDatabase } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 export const getFirebase = () => {
   const app =
@@ -22,5 +23,6 @@ export const getFirebase = () => {
     app,
     analytics: typeof window !== 'undefined' ? getAnalytics(app) : null,
     database: getDatabase(app),
+    auth: getAuth(app),
   };
 };

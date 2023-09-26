@@ -27,3 +27,8 @@ export type DragPiece = {
   pieceMouseOffsetX: number;
   pieceMouseOffsetY: number;
 };
+
+export type User = {
+  uid: string;
+  displayName: string;
+};
