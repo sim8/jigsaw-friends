@@ -9,6 +9,7 @@ import {
   PIECE_ROTATION_AMOUNT,
   PIECE_ROTATION_INTERVAL,
 } from '../constants/uiConfig';
+import useGame from '../hooks/useGame';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -25,6 +26,8 @@ const CanvasWrapper = styled.div`
 `;
 
 export default function JigsawCanvas() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const game = useGame();
   const canvasRef = useRef<HTMLDivElement>();
 
   const jigsawConfig: JigsawConfig = Object.freeze({

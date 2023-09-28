@@ -8,14 +8,14 @@ import {
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
-const NoSSRJigsawCanvas = dynamic(
-  () => import('../../components/JigsawCanvas'),
+const NoSSRGameContainer = dynamic(
+  () => import('../../components/GameContainer'),
   {
     ssr: false,
   },
 );
 
-export default function Home() {
+export default function Play() {
   return (
     <Container>
       <Head>
@@ -30,7 +30,7 @@ export default function Home() {
           <Link href="https://github.com/sim8/jigsaw-friends">GitHub</Link>
         </Description>
 
-        <NoSSRJigsawCanvas />
+        <NoSSRGameContainer />
       </Main>
     </Container>
   );

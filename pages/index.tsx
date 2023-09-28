@@ -6,25 +6,12 @@ import {
   Description,
 } from '../components/sharedstyles';
 import Link from 'next/link';
-import { useCallback } from 'react';
-import { getFirebase } from '../firebase/clientApp';
-import { ref, child, push } from 'firebase/database';
+import { signInAndCreateGame } from '../lib/actions';
+import { useRouter } from 'next/router';
 
 export default function Home() {
-  const actuallyPlay = useCallback(() => {
-    const db = getFirebase().database;
+  const router = useRouter();
 
-    const userData = {
-      name: 'Sim',
-    };
-
-    // Get a key for a new user.
-    const newUserKey = push(child(ref(db), 'users'), userData).key;
-    console.log(
-      '🚀 ~ file: index.tsx:23 ~ actuallyPlay ~ newUserKey:',
-      newUserKey,
-    );
-  }, []);
   return (
     <Container>
       <Head>
@@ -39,11 +26,20 @@ export default function Home() {
           <Link href="https://github.com/sim8/jigsaw-friends">GitHub</Link>
         </Description>
 
-        <Link href="/play/123" style={{ fontSize: '64px' }}>
-          Play
-        </Link>
-        <button style={{ fontSize: '64px' }} onClick={() => actuallyPlay()}>
-          Actually play
+        <button onClick={() => {}} style={{ fontSize: '64px' }}>
+          Play solo
+        </button>
+        <button
+          onClick={() => {
+            signInAndCreateGame().then((gameKey) => {
+              if (gameKey) {
+                router.push(`/play/${gameKey}`);
+              }
+            });
+          }}
+          style={{ fontSize: '64px' }}
+        >
+          Play with friends
         </button>
       </Main>
     </Container>
