@@ -2,18 +2,22 @@ import { useState, useEffect, createContext } from 'react';
 import { getFirebase } from '../firebase/clientApp';
 import { onAuthStateChanged } from 'firebase/auth';
 import { User } from '../types';
+import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 
-export const UserContext = createContext<{
-  user: User;
-  loadingUser: boolean;
-} | null>(null);
+export const UserContext = createContext<
+  | {
+      user: User | null;
+      loadingUser: boolean;
+    }
+  | typeof CONTEXT_NOT_PROVIDED
+>(CONTEXT_NOT_PROVIDED);
 
 export default function UserContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {

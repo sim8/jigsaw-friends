@@ -7,6 +7,10 @@ export default function GameContainer() {
   const { gameId } = router.query;
 
   const gameKey = Array.isArray(gameId) ? gameId[0] : gameId; // satisfy TS, never an array here
+
+  if (!gameKey) {
+    return null;
+  }
   return (
     <GameContextProvider gameKey={gameKey}>
       <JigsawCanvas />

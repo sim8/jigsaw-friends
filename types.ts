@@ -30,7 +30,7 @@ export type DragPiece = {
 
 export type User = {
   uid: string;
-  displayName: string;
+  displayName: string | null;
 };
 
 export type GameKey = string;

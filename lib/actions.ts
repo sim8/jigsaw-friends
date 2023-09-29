@@ -1,13 +1,13 @@
-import { signInAnonymously } from 'firebase/auth';
+import { UserCredential, signInAnonymously } from 'firebase/auth';
 import { ref, child, push } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
 import { Game, GameKey } from '../types';
 
-const createGame = (): GameKey => {
-  const { database, auth } = getFirebase();
+const createGame = (userCredential: UserCredential): GameKey | null => {
+  const { database } = getFirebase();
 
   const gameData: Game = {
-    host: auth.currentUser.uid,
+    host: userCredential.user.uid,
   };
 
   // Get a key for a new game.
@@ -19,7 +19,7 @@ const createGame = (): GameKey => {
 export const signInAndCreateGame = () => {
   const { auth } = getFirebase();
   return signInAnonymously(auth)
-    .then(() => createGame())
+    .then(createGame)
     .catch((error) => {
       console.log(error);
       // TODO

@@ -28,7 +28,7 @@ const CanvasWrapper = styled.div`
 export default function JigsawCanvas() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const game = useGame();
-  const canvasRef = useRef<HTMLDivElement>();
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const jigsawConfig: JigsawConfig = Object.freeze({
     canvasWidth: CANVAS_WIDTH,
@@ -43,20 +43,28 @@ export default function JigsawCanvas() {
     useJigsawState(jigsawConfig);
 
   const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
-  const [rotating, setRotating] = useState<'clockwise' | 'anticlockwise'>(null);
+  const [rotating, setRotating] = useState<
+    'clockwise' | 'anticlockwise' | null
+  >(null);
 
   const { draggingPieceKey } = dragPiece || {};
 
-  const updatePieceRotationInterval = useRef(null);
+  const updatePieceRotationInterval = useRef<NodeJS.Timer | null>(null);
+
+  const clearRotationInterval = () => {
+    if (typeof updatePieceRotationInterval.current === 'number') {
+      clearInterval(updatePieceRotationInterval.current);
+    }
+  };
 
   const cancelDrag = () => {
     setDragPiece(null);
     setRotating(null);
-    clearInterval(updatePieceRotationInterval.current);
+    clearRotationInterval();
   };
 
   useEffect(() => {
-    if (rotating) {
+    if (rotating && draggingPieceKey) {
       updatePieceRotationInterval.current = setInterval(() => {
         updatePieceRotation(draggingPieceKey, (prev) =>
           rotating === 'clockwise'
@@ -65,7 +73,7 @@ export default function JigsawCanvas() {
         );
       }, PIECE_ROTATION_INTERVAL);
 
-      return () => clearInterval(updatePieceRotationInterval.current);
+      return clearRotationInterval;
     }
   }, [rotating, draggingPieceKey, updatePieceRotation]);
 
@@ -91,7 +99,7 @@ export default function JigsawCanvas() {
       onMouseUp={() => cancelDrag()}
       onMouseLeave={() => cancelDrag()}
       onMouseMove={(e) => {
-        if (dragPiece) {
+        if (dragPiece && canvasRef.current && draggingPieceKey) {
           const { top, left } = getMousePosWithinElement(e, canvasRef.current);
           const pieceTop = top - dragPiece.pieceMouseOffsetY;
           const pieceLeft = left - dragPiece.pieceMouseOffsetX;
@@ -110,18 +118,20 @@ export default function JigsawCanvas() {
             pieceState={pieceState}
             jigsawConfig={jigsawConfig}
             onMouseDown={(e) => {
-              const { top, left } = getMousePosWithinElement(
-                e,
-                canvasRef.current,
-              );
-              const pieceMouseOffsetX = left - pieceState.left;
-              const pieceMouseOffsetY = top - pieceState.top;
+              if (canvasRef.current) {
+                const { top, left } = getMousePosWithinElement(
+                  e,
+                  canvasRef.current,
+                );
+                const pieceMouseOffsetX = left - pieceState.left;
+                const pieceMouseOffsetY = top - pieceState.top;
 
-              setDragPiece({
-                draggingPieceKey: pieceKey,
-                pieceMouseOffsetX,
-                pieceMouseOffsetY,
-              });
+                setDragPiece({
+                  draggingPieceKey: pieceKey,
+                  pieceMouseOffsetX,
+                  pieceMouseOffsetY,
+                });
+              }
             }}
             isDragging={draggingPieceKey === pieceKey}
           />

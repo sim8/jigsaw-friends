@@ -2,12 +2,13 @@ import { useState, useEffect, createContext } from 'react';
 import { getFirebase } from '../firebase/clientApp';
 import { Game, GameKey } from '../types';
 import { ref, onValue } from 'firebase/database';
+import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 
-export const NOT_PROVIDED = 'NOT_PROVIDED';
+type GameState = Game | null;
 
-export const GameContext = createContext<Game | null | typeof NOT_PROVIDED>(
-  NOT_PROVIDED,
-);
+export const GameContext = createContext<
+  GameState | typeof CONTEXT_NOT_PROVIDED
+>(CONTEXT_NOT_PROVIDED);
 
 export default function GameContextProvider({
   children,
@@ -16,7 +17,7 @@ export default function GameContextProvider({
   gameKey: GameKey;
   children: React.ReactNode;
 }) {
-  const [game, setGame] = useState<Game>(null);
+  const [game, setGame] = useState<GameState>(null);
 
   useEffect(() => {
     const { database } = getFirebase();
