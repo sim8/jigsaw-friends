@@ -5,6 +5,7 @@ export function getPieceKey(piece: Piece) {
 }
 
 export function getPieceFromKey(pieceKey: string): Piece {
+  // @ts-expect-error todo
   const [colIndex, rowIndex] = pieceKey.match(/\d+/g);
   return {
     colIndex: parseInt(colIndex),

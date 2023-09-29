@@ -9,7 +9,7 @@ export function generateJigsawState({
   rows,
   columns,
 }: JigsawConfig): JigsawState {
-  const jigsawState = {};
+  const jigsawState: JigsawState = {};
   [...Array(rows)].forEach((_, rowIndex) => {
     [...Array(columns)].forEach((_, colIndex) => {
       const pieceKey = getPieceKey({

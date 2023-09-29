@@ -27,3 +27,25 @@ export type DragPiece = {
   pieceMouseOffsetX: number;
   pieceMouseOffsetY: number;
 };
+
+export type User = {
+  uid: string;
+  displayName: string | null;
+};
+
+export type GameKey = string;
+
+export type UserState = {
+  cursorPos: {
+    top: number;
+    left: number;
+  };
+};
+
+// Null / empty objects are not stored in Firebase
+export type Game = {
+  host: string;
+  startedAt?: number;
+  liveUsers?: Record<string, UserState>;
+  pieces?: JigsawState;
+};
