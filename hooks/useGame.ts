@@ -1,10 +1,11 @@
 import { useContext } from 'react';
-import { GameContext, NOT_PROVIDED } from '../contexts/GameContextProvider';
+import { GameContext } from '../contexts/GameContextProvider';
+import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 
 export default function useGame() {
   const gameContext = useContext(GameContext);
 
-  if (gameContext === NOT_PROVIDED) {
+  if (gameContext === CONTEXT_NOT_PROVIDED) {
     throw new Error('Using GameContext without it being provided');
   }
 
