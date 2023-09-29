@@ -1,7 +1,7 @@
-import GameContextProvider from '../contexts/GameContextProvider';
+import GameContextProviderWithLoadingState from '../contexts/GameContextProviderWithLoadingState';
 import { useRouter } from 'next/router';
-import JigsawCanvas from './JigsawCanvas';
 import RequiresAuth from './RequiresAuth';
+import LobbyOrGame from './LobbyOrGame';
 
 export default function GameContainer() {
   const router = useRouter();
@@ -14,9 +14,12 @@ export default function GameContainer() {
   }
   return (
     <RequiresAuth>
-      <GameContextProvider gameKey={gameKey}>
-        <JigsawCanvas />
-      </GameContextProvider>
+      <GameContextProviderWithLoadingState
+        gameKey={gameKey}
+        loadingState={<>{'Loading...'}</>}
+      >
+        <LobbyOrGame />
+      </GameContextProviderWithLoadingState>
     </RequiresAuth>
   );
 }
