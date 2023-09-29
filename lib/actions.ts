@@ -16,9 +16,13 @@ const createGame = (userCredential: UserCredential): GameKey | null => {
   return newGameKey;
 };
 
-export const signInAndCreateGame = () => {
+export function signIn() {
   const { auth } = getFirebase();
-  return signInAnonymously(auth)
+  return signInAnonymously(auth);
+}
+
+export function signInAndCreateGame() {
+  return signIn()
     .then(createGame)
     .catch((error) => {
       console.log(error);
@@ -27,4 +31,4 @@ export const signInAndCreateGame = () => {
       // const errorMessage = error.message;
       // ...
     });
-};
+}

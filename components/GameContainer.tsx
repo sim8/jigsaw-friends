@@ -1,6 +1,7 @@
 import GameContextProvider from '../contexts/GameContextProvider';
 import { useRouter } from 'next/router';
 import JigsawCanvas from './JigsawCanvas';
+import RequiresAuth from './RequiresAuth';
 
 export default function GameContainer() {
   const router = useRouter();
@@ -12,8 +13,10 @@ export default function GameContainer() {
     return null;
   }
   return (
-    <GameContextProvider gameKey={gameKey}>
-      <JigsawCanvas />
-    </GameContextProvider>
+    <RequiresAuth>
+      <GameContextProvider gameKey={gameKey}>
+        <JigsawCanvas />
+      </GameContextProvider>
+    </RequiresAuth>
   );
 }
