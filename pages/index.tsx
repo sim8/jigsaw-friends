@@ -8,6 +8,7 @@ import {
 import Link from 'next/link';
 import { signInAndCreateGame } from '../lib/actions';
 import { useRouter } from 'next/router';
+import { getGameLink } from '../utils/urls';
 
 export default function Home() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Home() {
           onClick={() => {
             signInAndCreateGame().then((gameKey) => {
               if (gameKey) {
-                router.push(`/play/${gameKey}`);
+                router.push(getGameLink(gameKey));
               }
             });
           }}
