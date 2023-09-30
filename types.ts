@@ -49,3 +49,5 @@ export type Game = {
   liveUsers?: Record<string, UserState>;
   pieces?: JigsawState;
 };
+
+export type GameWithKey = Game & { gameKey: GameKey };

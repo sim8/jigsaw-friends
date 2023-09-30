@@ -1,5 +1,5 @@
 import { UserCredential, signInAnonymously } from 'firebase/auth';
-import { ref, child, push } from 'firebase/database';
+import { ref, child, push, set, serverTimestamp } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
 import { Game, GameKey } from '../types';
 
@@ -16,9 +16,13 @@ const createGame = (userCredential: UserCredential): GameKey | null => {
   return newGameKey;
 };
 
-export const signInAndCreateGame = () => {
+export function signIn() {
   const { auth } = getFirebase();
-  return signInAnonymously(auth)
+  return signInAnonymously(auth);
+}
+
+export function signInAndCreateGame() {
+  return signIn()
     .then(createGame)
     .catch((error) => {
       console.log(error);
@@ -27,4 +31,9 @@ export const signInAndCreateGame = () => {
       // const errorMessage = error.message;
       // ...
     });
-};
+}
+
+export function startGame(gameKey: GameKey) {
+  const { database } = getFirebase();
+  set(ref(database, `games/${gameKey}/startedAt`), serverTimestamp());
+}
