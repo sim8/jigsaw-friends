@@ -48,7 +48,7 @@ export type UserState = {
 export type Game = {
   host: string;
   startedAt?: number;
-  liveUsers?: Record<string, UserState>;
+  liveUsers: Record<string, UserState>;
   pieces?: JigsawState;
 };
 

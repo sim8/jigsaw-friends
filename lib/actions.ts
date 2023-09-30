@@ -44,3 +44,10 @@ export function startGame(gameKey: GameKey) {
   const { database } = getFirebase();
   set(ref(database, `games/${gameKey}/startedAt`), serverTimestamp());
 }
+
+export function joinGame(gameKey: GameKey, uid: string) {
+  const { database } = getFirebase();
+  set(ref(database, `games/${gameKey}/liveUsers/${uid}`), {
+    joinedAt: serverTimestamp(),
+  });
+}
