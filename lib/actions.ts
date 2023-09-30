@@ -6,11 +6,18 @@ import { Game, GameKey } from '../types';
 const createGame = (userCredential: UserCredential): GameKey | null => {
   const { database } = getFirebase();
 
+  const { uid } = userCredential.user;
+
   const gameData: Game = {
-    host: userCredential.user.uid,
+    host: uid,
+    liveUsers: {
+      [uid]: {
+        // TODO not sure if we can do better typing here
+        joinedAt: serverTimestamp() as unknown as number,
+      },
+    },
   };
 
-  // Get a key for a new game.
   const newGameKey = push(child(ref(database), 'games'), gameData).key;
 
   return newGameKey;
