@@ -32,7 +32,7 @@ export default function GameContextProviderWithLoadingState({
   }, [gameKey]);
 
   if (game === null) {
-    return loadingState;
+    return <>{loadingState}</>;
   }
 
   return (

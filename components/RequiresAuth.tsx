@@ -14,10 +14,10 @@ export default function RequiresAuth({ children }: Props) {
       .catch((e) => setError(e));
   }, []);
   if (error) {
-    return 'Sign in error';
+    return <>{'Sign in error'}</>;
   }
   if (!isSignedIn) {
-    return 'Loading...';
+    return <>{'Loading...'}</>;
   }
-  return children;
+  return <>{children}</>;
 }
