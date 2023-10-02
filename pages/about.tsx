@@ -5,14 +5,24 @@ import {
   Title,
   Description,
 } from '../components/sharedstyles';
+import Navigation from '../components/Navigation';
 
 export default function About() {
   return (
     <Container>
       <Main>
-        <Title>About Page</Title>
+        <Navigation />
+        <Title>Jigsaw friends</Title>
         <Description>
-          <Link href="/">&larr; Go Back</Link>
+          Jigsaw friends is a game made by{' '}
+          <Link href="https://simeonlees.com">Simeon Lees</Link>.
+          <br />
+          It&apos;s built using Firebase and React.
+          <Link href="/">
+            <br />
+            <br />
+            &larr; Back
+          </Link>
         </Description>
       </Main>
     </Container>

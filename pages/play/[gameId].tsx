@@ -1,12 +1,7 @@
 import Head from 'next/head';
-import {
-  Container,
-  Main,
-  Title,
-  Description,
-} from '../../components/sharedstyles';
-import Link from 'next/link';
+import { Container, Main, Title } from '../../components/sharedstyles';
 import dynamic from 'next/dynamic';
+import Navigation from '../../components/Navigation';
 
 const NoSSRGameContainer = dynamic(
   () => import('../../components/GameContainer'),
@@ -25,10 +20,7 @@ export default function Play() {
       </Head>
       <Main>
         <Title>Jigsaw friends</Title>
-
-        <Description>
-          <Link href="https://github.com/sim8/jigsaw-friends">GitHub</Link>
-        </Description>
+        <Navigation />
 
         <NoSSRGameContainer />
       </Main>
