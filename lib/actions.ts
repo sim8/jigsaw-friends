@@ -51,3 +51,8 @@ export function joinGame(gameKey: GameKey, uid: string) {
     joinedAt: serverTimestamp(),
   });
 }
+
+export function setName(gameKey: GameKey, uid: string, name: string) {
+  const { database } = getFirebase();
+  set(ref(database, `games/${gameKey}/liveUsers/${uid}/name`), name);
+}

@@ -42,6 +42,7 @@ export type UserState = {
     top: number;
     left: number;
   };
+  name?: string;
 };
 
 // Null / empty objects are not stored in Firebase
