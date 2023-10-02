@@ -32,7 +32,9 @@ export default function Lobby() {
                 type="text"
                 placeholder="Type name here"
                 value={liveUsers[uid].name || ''}
-                onChange={(e) => setName(gameKey, user.uid, e.target.value)}
+                onChange={(e) =>
+                  setName({ gameKey, uid: user.uid, name: e.target.value })
+                }
               />
             ) : (
               liveUsers[uid].name || `Player ${index + 1}`
@@ -40,7 +42,7 @@ export default function Lobby() {
           </div>
         ))}
       </ol>
-      <button onClick={() => startGame(gameKey)}>Play</button>
+      <button onClick={() => startGame({ gameKey })}>Play</button>
       <button onClick={() => copyInviteLink()}>Copy invite link</button>
     </div>
   );

@@ -40,19 +40,27 @@ export function signInAndCreateGame() {
     });
 }
 
-export function startGame(gameKey: GameKey) {
+export function startGame({ gameKey }: { gameKey: GameKey }) {
   const { database } = getFirebase();
   set(ref(database, `games/${gameKey}/startedAt`), serverTimestamp());
 }
 
-export function joinGame(gameKey: GameKey, uid: string) {
+export function joinGame({ gameKey, uid }: { gameKey: GameKey; uid: string }) {
   const { database } = getFirebase();
   set(ref(database, `games/${gameKey}/liveUsers/${uid}`), {
     joinedAt: serverTimestamp(),
   });
 }
 
-export function setName(gameKey: GameKey, uid: string, name: string) {
+export function setName({
+  gameKey,
+  uid,
+  name,
+}: {
+  gameKey: GameKey;
+  uid: string;
+  name: string;
+}) {
   const { database } = getFirebase();
   set(ref(database, `games/${gameKey}/liveUsers/${uid}/name`), name);
 }

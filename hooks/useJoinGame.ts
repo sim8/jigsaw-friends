@@ -16,7 +16,7 @@ export default function useJoinGame() {
   useEffect(() => {
     // TODO https://github.com/sim8/jigsaw-friends/issues/9
     if (!isInGame && uid) {
-      joinGame(gameKey, uid);
+      joinGame({ gameKey, uid });
     }
   }, [isInGame, gameKey, uid]);
 
