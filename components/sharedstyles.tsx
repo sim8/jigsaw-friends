@@ -21,9 +21,10 @@ const Main = styled.main`
 const Title = styled.h1`
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 5rem;
   text-align: center;
   text-decoration: none;
+  font-weight: 400;
 
   a {
     color: ${({ theme }) => theme.colors.secondary};
