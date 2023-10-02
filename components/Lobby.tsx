@@ -5,7 +5,7 @@ import { getGameLink } from '../utils/urls';
 import useUser from '../hooks/useUser';
 
 export default function Lobby() {
-  const { gameKey, liveUsers } = useGame();
+  const { gameKey, liveUsers, host } = useGame();
   const { user } = useUser();
 
   const orderedLiveUserIds = useMemo(
@@ -42,7 +42,12 @@ export default function Lobby() {
           </div>
         ))}
       </ol>
-      <button onClick={() => startGame({ gameKey })}>Play</button>
+      <button
+        onClick={() => startGame({ gameKey })}
+        disabled={user ? user.uid !== host : true}
+      >
+        Start
+      </button>
       <button onClick={() => copyInviteLink()}>Copy invite link</button>
     </div>
   );
