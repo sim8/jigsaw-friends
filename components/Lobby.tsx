@@ -5,6 +5,19 @@ import { getGameLink } from '../utils/urls';
 import useUser from '../hooks/useUser';
 import { Title } from './sharedstyles';
 import Button from './styled/Button';
+import styled from 'styled-components';
+import Input from './styled/Input';
+
+const PlayerCardList = styled.ol`
+  margin: 0;
+  padding: 0;
+`;
+
+const PlayerCardWrapper = styled.div`
+  border: 3px solid black;
+  border-radius: 10px;
+  padding: 10px;
+`;
 
 export default function Lobby() {
   const { gameKey, liveUsers, host } = useGame();
@@ -26,12 +39,14 @@ export default function Lobby() {
   return (
     <div>
       <Title>Lobby</Title>
-      <ol>
+      <PlayerCardList>
         {orderedLiveUserIds.map((uid, index) => (
-          <div key={uid}>
+          <PlayerCardWrapper key={uid}>
             {user && user.uid === uid ? (
-              <input
+              <Input
                 type="text"
+                autoComplete="off"
+                autoFocus={true}
                 placeholder="Type your name!"
                 value={liveUsers[uid].name || ''}
                 onChange={(e) =>
@@ -41,9 +56,9 @@ export default function Lobby() {
             ) : (
               liveUsers[uid].name || `Player ${index + 1}`
             )}
-          </div>
+          </PlayerCardWrapper>
         ))}
-      </ol>
+      </PlayerCardList>
       <Button
         onClick={() => startGame({ gameKey })}
         disabled={user ? user.uid !== host : true}
