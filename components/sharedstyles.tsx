@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+// TODO migrate these to individual files / get rid
+
 const Container = styled.div`
   padding: 0 0.5rem;
   display: flex;

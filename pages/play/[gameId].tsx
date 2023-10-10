@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Container, Main, Title } from '../../components/sharedstyles';
+import { Container, Main } from '../../components/sharedstyles';
 import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
 
@@ -19,7 +19,6 @@ export default function Play() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <Title>Jigsaw friends</Title>
         <Navigation />
 
         <NoSSRGameContainer />

@@ -3,6 +3,8 @@ import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
 import { getGameLink } from '../utils/urls';
 import useUser from '../hooks/useUser';
+import { Title } from './sharedstyles';
+import Button from './styled/Button';
 
 export default function Lobby() {
   const { gameKey, liveUsers, host } = useGame();
@@ -23,14 +25,14 @@ export default function Lobby() {
 
   return (
     <div>
-      <h1>Lobby</h1>
+      <Title>Lobby</Title>
       <ol>
         {orderedLiveUserIds.map((uid, index) => (
           <div key={uid}>
             {user && user.uid === uid ? (
               <input
                 type="text"
-                placeholder="Type name here"
+                placeholder="Type your name!"
                 value={liveUsers[uid].name || ''}
                 onChange={(e) =>
                   setName({ gameKey, uid: user.uid, name: e.target.value })
@@ -42,13 +44,13 @@ export default function Lobby() {
           </div>
         ))}
       </ol>
-      <button
+      <Button
         onClick={() => startGame({ gameKey })}
         disabled={user ? user.uid !== host : true}
       >
         Start
-      </button>
-      <button onClick={() => copyInviteLink()}>Copy invite link</button>
+      </Button>
+      <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
     </div>
   );
 }

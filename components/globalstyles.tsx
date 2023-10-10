@@ -1,5 +1,4 @@
 import { createGlobalStyle } from 'styled-components';
-import { pangolin } from '../utils/fonts';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -16,22 +15,6 @@ const GlobalStyle = createGlobalStyle`
     color: inherit;
     text-decoration: none;
     color: #0099ff;
-  }
-
-  button {
-    // resets
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-
-    font-family: ${pangolin.style.fontFamily};
-    border: 4px solid black;
-    border-radius: 4px;
-    padding: 10px 20px
   }
 
   * {

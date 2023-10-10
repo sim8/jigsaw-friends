@@ -6,9 +6,10 @@ import { getGameLink } from '../utils/urls';
 import Navigation from '../components/Navigation';
 import Image from 'next/image';
 import styled from 'styled-components';
+import Button from '../components/styled/Button';
 
 const RotatingImage = styled(Image)`
-  margin: 40px 0;
+  margin: 50px 0 70px;
 
   animation: rotation 8s infinite linear;
 
@@ -43,13 +44,14 @@ export default function Home() {
           height={100}
         />
 
-        <button
+        <Button
           onClick={() => {}}
-          style={{ fontSize: '64px', marginBottom: '15px' }}
+          size="large"
+          style={{ marginBottom: '20px' }}
         >
           Play solo
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             signInAndCreateGame().then((gameKey) => {
               if (gameKey) {
@@ -57,10 +59,10 @@ export default function Home() {
               }
             });
           }}
-          style={{ fontSize: '64px' }}
+          size="large"
         >
           Play with friends
-        </button>
+        </Button>
       </Main>
     </Container>
   );
