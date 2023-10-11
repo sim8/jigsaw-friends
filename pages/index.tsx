@@ -1,14 +1,27 @@
 import Head from 'next/head';
-import {
-  Container,
-  Main,
-  Title,
-  Description,
-} from '../components/sharedstyles';
-import Link from 'next/link';
+import { Container, Main, Title } from '../components/sharedstyles';
 import { signInAndCreateGame } from '../lib/actions';
 import { useRouter } from 'next/router';
 import { getGameLink } from '../utils/urls';
+import Navigation from '../components/Navigation';
+import Image from 'next/image';
+import styled from 'styled-components';
+import Button from '../components/styled/Button';
+
+const RotatingImage = styled(Image)`
+  margin: 50px 0 70px;
+
+  animation: rotation 8s infinite linear;
+
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }
+`;
 
 export default function Home() {
   const router = useRouter();
@@ -21,16 +34,24 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
+        <Navigation />
         <Title>Jigsaw friends</Title>
 
-        <Description>
-          <Link href="https://github.com/sim8/jigsaw-friends">GitHub</Link>
-        </Description>
+        <RotatingImage
+          src="/images/puzzle_icon.svg"
+          alt="puzzle piece"
+          width={100}
+          height={100}
+        />
 
-        <button onClick={() => {}} style={{ fontSize: '64px' }}>
+        <Button
+          onClick={() => {}}
+          size="large"
+          style={{ marginBottom: '20px' }}
+        >
           Play solo
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => {
             signInAndCreateGame().then((gameKey) => {
               if (gameKey) {
@@ -38,10 +59,10 @@ export default function Home() {
               }
             });
           }}
-          style={{ fontSize: '64px' }}
+          size="large"
         >
           Play with friends
-        </button>
+        </Button>
       </Main>
     </Container>
   );
