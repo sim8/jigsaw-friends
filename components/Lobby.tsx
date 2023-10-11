@@ -7,16 +7,20 @@ import { Title } from './sharedstyles';
 import Button from './styled/Button';
 import styled from 'styled-components';
 import Input from './styled/Input';
+import { COLOR_OPTIONS } from '../constants/colors';
 
 const PlayerCardList = styled.ol`
   margin: 0;
   padding: 0;
+  width: 400px;
 `;
 
 const PlayerCardWrapper = styled.div`
   border: 3px solid black;
   border-radius: 10px;
   padding: 10px;
+  background-color: ${(props) => props.color};
+  margin-bottom: 5px;
 `;
 
 export default function Lobby() {
@@ -41,11 +45,14 @@ export default function Lobby() {
       <Title>Lobby</Title>
       <PlayerCardList>
         {orderedLiveUserIds.map((uid, index) => (
-          <PlayerCardWrapper key={uid}>
+          <PlayerCardWrapper
+            key={uid}
+            color={COLOR_OPTIONS[index % COLOR_OPTIONS.length]}
+          >
             {user && user.uid === uid ? (
               <Input
                 type="text"
-                autoComplete="off"
+                maxLength={50}
                 autoFocus={true}
                 placeholder="Type your name!"
                 value={liveUsers[uid].name || ''}
