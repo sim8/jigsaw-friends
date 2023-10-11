@@ -9,6 +9,10 @@ import styled from 'styled-components';
 import Input from './styled/Input';
 import { COLOR_OPTIONS } from '../constants/colors';
 
+const LobbyContents = styled.div`
+  display: flex;
+`;
+
 const PlayerCardList = styled.ol`
   margin: 0;
   padding: 0;
@@ -43,36 +47,42 @@ export default function Lobby() {
   return (
     <div>
       <Title>Lobby</Title>
-      <PlayerCardList>
-        {orderedLiveUserIds.map((uid, index) => (
-          <PlayerCardWrapper
-            key={uid}
-            color={COLOR_OPTIONS[index % COLOR_OPTIONS.length]}
-          >
-            {user && user.uid === uid ? (
-              <Input
-                type="text"
-                maxLength={50}
-                autoFocus={true}
-                placeholder="Type your name!"
-                value={liveUsers[uid].name || ''}
-                onChange={(e) =>
-                  setName({ gameKey, uid: user.uid, name: e.target.value })
-                }
-              />
-            ) : (
-              liveUsers[uid].name || `Player ${index + 1}`
-            )}
-          </PlayerCardWrapper>
-        ))}
-      </PlayerCardList>
+      <LobbyContents>
+        <div>
+          <PlayerCardList>
+            {orderedLiveUserIds.map((uid, index) => (
+              <PlayerCardWrapper
+                key={uid}
+                color={COLOR_OPTIONS[index % COLOR_OPTIONS.length]}
+              >
+                {user && user.uid === uid ? (
+                  <Input
+                    type="text"
+                    maxLength={50}
+                    autoFocus={true}
+                    placeholder="Type your name!"
+                    value={liveUsers[uid].name || ''}
+                    onChange={(e) =>
+                      setName({ gameKey, uid: user.uid, name: e.target.value })
+                    }
+                  />
+                ) : (
+                  liveUsers[uid].name || `Player ${index + 1}`
+                )}
+              </PlayerCardWrapper>
+            ))}
+          </PlayerCardList>
+          <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
+        </div>
+      </LobbyContents>
       <Button
         onClick={() => startGame({ gameKey })}
         disabled={user ? user.uid !== host : true}
+        size="large"
+        style={{ display: 'block', textAlign: 'center' }}
       >
         Start
       </Button>
-      <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
     </div>
   );
 }
