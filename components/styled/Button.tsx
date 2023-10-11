@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { pangolin } from '../../utils/fonts';
+import { COLORS } from '../../constants/colors';
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: 'large' | 'medium';
@@ -25,11 +26,18 @@ const StyledButton = styled.button`
   outline: inherit;
 
   font-family: ${pangolin.style.fontFamily};
-  border: 4px solid black;
+  border: 4px solid ${(props) => (props.disabled ? COLORS.GRAY : 'black')};
   border-radius: 6px;
   padding: 10px 20px;
 
   font-size: ${getFontSize};
+
+  ${(props) =>
+    props.disabled &&
+    `
+    color: ${COLORS.GRAY};
+    cursor: not-allowed;
+  `};
 `;
 
 export default function Button({ ...buttonProps }: Props) {

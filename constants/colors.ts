@@ -1,4 +1,5 @@
 export const COLORS = {
+  // options
   RED: '#FFADAD',
   ORANGE: '#FFD6A5',
   YELLOW: '#FDFFB6',
@@ -7,6 +8,9 @@ export const COLORS = {
   NAVY: '#A0C4FF',
   PURPLE: '#BDB2FF',
   PINK: '#FFC6FF',
+
+  // app
+  GRAY: '#CFCFCF',
 } as const;
 
 export const COLOR_OPTIONS = [
