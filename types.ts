@@ -4,11 +4,13 @@ export type Piece = {
 };
 
 export type PieceKey = string;
+export type Uid = string;
 
 export type PieceState = {
   top: number;
   left: number;
   rotation: number;
+  heldBy?: Uid;
 };
 
 export type JigsawState = Record<PieceKey, PieceState>;
@@ -29,7 +31,7 @@ export type DragPiece = {
 };
 
 export type User = {
-  uid: string;
+  uid: Uid;
   displayName: string | null;
 };
 
@@ -47,7 +49,7 @@ export type UserState = {
 
 // Null / empty objects are not stored in Firebase
 export type Game = {
-  host: string;
+  host: Uid;
   startedAt?: number;
   liveUsers: Record<string, UserState>;
   jigsaw?: JigsawState;

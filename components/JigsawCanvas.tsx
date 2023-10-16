@@ -14,6 +14,8 @@ import {
   JIGSAW_CONFIG,
 } from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
+import { pickUpPiece, releasePiece } from '../lib/actions';
+import useUser from '../hooks/useUser';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updatePieceRotation = (...args: unknown[]) => {};
@@ -28,10 +30,15 @@ const CanvasWrapper = styled.div`
 `;
 
 export default function JigsawCanvas() {
-  const { jigsaw: jigsawState } = useGame();
+  const { jigsaw: jigsawState, gameKey } = useGame();
+  const { user } = useUser();
   if (!jigsawState) {
     // TODO maybe enforce this through context?
     throw new Error('jigsawState not defined but it should be!!!');
+  }
+
+  if (!user) {
+    throw new Error('TODO this should never happen');
   }
 
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -51,7 +58,15 @@ export default function JigsawCanvas() {
     }
   };
 
-  const cancelDrag = () => {
+  const maybeCancelDrag = () => {
+    if (!dragPiece) {
+      return;
+    }
+    releasePiece({
+      gameKey,
+      pieceKey: dragPiece.draggingPieceKey,
+      uid: user.uid,
+    });
     setDragPiece(null);
     setRotating(null);
     clearRotationInterval();
@@ -90,13 +105,15 @@ export default function JigsawCanvas() {
       onKeyUp={() => {
         setRotating(null);
       }}
-      onMouseUp={() => cancelDrag()}
-      onMouseLeave={() => cancelDrag()}
+      onMouseUp={() => maybeCancelDrag()}
+      onMouseLeave={() => maybeCancelDrag()}
       onMouseMove={(e) => {
         if (dragPiece && canvasRef.current && draggingPieceKey) {
           const { top, left } = getMousePosWithinElement(e, canvasRef.current);
           const pieceTop = top - dragPiece.pieceMouseOffsetY;
           const pieceLeft = left - dragPiece.pieceMouseOffsetX;
+
+          // TODO do we want to store "uncomitted" piece state locally?
           setPieceState(draggingPieceKey, {
             top: pieceTop,
             left: pieceLeft,
@@ -113,6 +130,15 @@ export default function JigsawCanvas() {
             jigsawConfig={JIGSAW_CONFIG}
             onMouseDown={(e) => {
               if (canvasRef.current) {
+                pickUpPiece({
+                  gameKey,
+                  pieceKey,
+                  uid: user.uid,
+                }).then((transactionResult) => {
+                  if (transactionResult.committed) {
+                    // only here do we want to send piece updates
+                  }
+                });
                 const { top, left } = getMousePosWithinElement(
                   e,
                   canvasRef.current,

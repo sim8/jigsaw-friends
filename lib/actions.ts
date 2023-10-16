@@ -5,10 +5,11 @@ import {
   push,
   set,
   update,
+  runTransaction,
   serverTimestamp,
 } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
-import { Game, GameKey } from '../types';
+import { Game, GameKey, PieceKey, Uid } from '../types';
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 
@@ -75,4 +76,47 @@ export function setName({
 }) {
   const { database } = getFirebase();
   set(ref(database, `games/${gameKey}/liveUsers/${uid}/name`), name);
+}
+
+export function pickUpPiece({
+  gameKey,
+  pieceKey,
+  uid,
+}: {
+  gameKey: GameKey;
+  pieceKey: PieceKey;
+  uid: Uid;
+}) {
+  const { database } = getFirebase();
+  return runTransaction(
+    ref(database, `games/${gameKey}/jigsaw/${pieceKey}/heldBy`),
+    (currentData?: Uid) => {
+      if (currentData) {
+        return;
+      }
+      return uid;
+    },
+  );
+}
+
+export function releasePiece({
+  gameKey,
+  pieceKey,
+  uid,
+}: {
+  gameKey: GameKey;
+  pieceKey: PieceKey;
+  uid: Uid;
+}) {
+  const { database } = getFirebase();
+  // TODO is transaction needed here?
+  return runTransaction(
+    ref(database, `games/${gameKey}/jigsaw/${pieceKey}/heldBy`),
+    (currentData?: Uid) => {
+      if (currentData !== uid) {
+        return;
+      }
+      return null;
+    },
+  );
 }
