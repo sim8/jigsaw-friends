@@ -1,7 +1,16 @@
 import { UserCredential, signInAnonymously } from 'firebase/auth';
-import { ref, child, push, set, serverTimestamp } from 'firebase/database';
+import {
+  ref,
+  child,
+  push,
+  set,
+  update,
+  serverTimestamp,
+} from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
 import { Game, GameKey } from '../types';
+import { generateJigsawState } from './jigsawGeneration';
+import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 
 const createGame = (userCredential: UserCredential): GameKey | null => {
   const { database } = getFirebase();
@@ -42,7 +51,10 @@ export function signInAndCreateGame() {
 
 export function startGame({ gameKey }: { gameKey: GameKey }) {
   const { database } = getFirebase();
-  set(ref(database, `games/${gameKey}/startedAt`), serverTimestamp());
+  update(ref(database), {
+    [`games/${gameKey}/startedAt`]: serverTimestamp(),
+    [`games/${gameKey}/jigsaw`]: generateJigsawState(JIGSAW_CONFIG),
+  });
 }
 
 export function joinGame({ gameKey, uid }: { gameKey: GameKey; uid: string }) {

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import useJigsawState from '../hooks/useJigsawState';
-import { DragPiece, JigsawConfig } from '../types';
+import { DragPiece } from '../types';
 import Piece from './Piece';
 import { useEffect, useRef, useState } from 'react';
 import { getMousePosWithinElement } from '../utils/dom';
@@ -9,14 +8,17 @@ import {
   PIECE_ROTATION_AMOUNT,
   PIECE_ROTATION_INTERVAL,
 } from '../constants/uiConfig';
+import {
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  JIGSAW_CONFIG,
+} from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
-const JIGSAW_WIDTH = 400;
-const JIGSAW_HEIGHT = 300;
-const COLUMNS = 3;
-const ROWS = 2;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const updatePieceRotation = (...args: unknown[]) => {};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const setPieceState = (...args: unknown[]) => {};
 
 const CanvasWrapper = styled.div`
   outline: 7px solid #0099ff;
@@ -26,21 +28,13 @@ const CanvasWrapper = styled.div`
 `;
 
 export default function JigsawCanvas() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const game = useGame();
+  const { jigsaw: jigsawState } = useGame();
+  if (!jigsawState) {
+    // TODO maybe enforce this through context?
+    throw new Error('jigsawState not defined but it should be!!!');
+  }
+
   const canvasRef = useRef<HTMLDivElement>(null);
-
-  const jigsawConfig: JigsawConfig = Object.freeze({
-    canvasWidth: CANVAS_WIDTH,
-    canvasHeight: CANVAS_HEIGHT,
-    jigsawWidth: JIGSAW_WIDTH,
-    jigsawHeight: JIGSAW_HEIGHT,
-    columns: COLUMNS,
-    rows: ROWS,
-  });
-
-  const { jigsawState, setPieceState, updatePieceRotation } =
-    useJigsawState(jigsawConfig);
 
   const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
   const [rotating, setRotating] = useState<
@@ -66,7 +60,7 @@ export default function JigsawCanvas() {
   useEffect(() => {
     if (rotating && draggingPieceKey) {
       updatePieceRotationInterval.current = setInterval(() => {
-        updatePieceRotation(draggingPieceKey, (prev) =>
+        updatePieceRotation(draggingPieceKey, (prev: number) =>
           rotating === 'clockwise'
             ? prev + PIECE_ROTATION_AMOUNT
             : prev - PIECE_ROTATION_AMOUNT,
@@ -75,7 +69,7 @@ export default function JigsawCanvas() {
 
       return clearRotationInterval;
     }
-  }, [rotating, draggingPieceKey, updatePieceRotation]);
+  }, [rotating, draggingPieceKey]);
 
   return (
     <CanvasWrapper
@@ -116,7 +110,7 @@ export default function JigsawCanvas() {
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
-            jigsawConfig={jigsawConfig}
+            jigsawConfig={JIGSAW_CONFIG}
             onMouseDown={(e) => {
               if (canvasRef.current) {
                 const { top, left } = getMousePosWithinElement(

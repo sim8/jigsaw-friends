@@ -50,7 +50,7 @@ export type Game = {
   host: string;
   startedAt?: number;
   liveUsers: Record<string, UserState>;
-  pieces?: JigsawState;
+  jigsaw?: JigsawState;
 };
 
 export type GameWithKey = Game & { gameKey: GameKey };
