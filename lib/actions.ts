@@ -12,6 +12,7 @@ import { getFirebase } from '../firebase/clientApp';
 import { Game, GameKey, PieceKey, Uid } from '../types';
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
+import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
 
 const createGame = (userCredential: UserCredential): GameKey | null => {
   const { database } = getFirebase();
@@ -137,4 +138,24 @@ export function setPiecePos({
     [`games/${gameKey}/jigsaw/${pieceKey}/top`]: top,
     [`games/${gameKey}/jigsaw/${pieceKey}/left`]: left,
   });
+}
+
+export function rotatePiece({
+  gameKey,
+  pieceKey,
+  direction,
+}: {
+  gameKey: GameKey;
+  pieceKey: PieceKey;
+  direction: 'clockwise' | 'anticlockwise';
+}) {
+  const { database } = getFirebase();
+  return runTransaction(
+    ref(database, `games/${gameKey}/jigsaw/${pieceKey}/rotation`),
+    (prev: number) => {
+      return direction === 'clockwise'
+        ? prev + PIECE_ROTATION_AMOUNT
+        : prev - PIECE_ROTATION_AMOUNT;
+    },
+  );
 }

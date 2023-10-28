@@ -4,17 +4,19 @@ import Piece from './Piece';
 import { useEffect, useRef, useState } from 'react';
 import { getMousePosWithinElement } from '../utils/dom';
 import { keyboardShortcuts } from '../constants/keyboardShortcuts';
-import {
-  PIECE_ROTATION_AMOUNT,
-  PIECE_ROTATION_INTERVAL,
-} from '../constants/uiConfig';
+import { PIECE_ROTATION_INTERVAL } from '../constants/uiConfig';
 import {
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
   JIGSAW_CONFIG,
 } from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
-import { pickUpPiece, releasePiece, setPiecePos } from '../lib/actions';
+import {
+  pickUpPiece,
+  releasePiece,
+  rotatePiece,
+  setPiecePos,
+} from '../lib/actions';
 import useUser from '../hooks/useUser';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,7 +46,7 @@ export default function JigsawCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
-  const [rotating, setRotating] = useState<
+  const [rotatingDirection, setRotatingDirection] = useState<
     'clockwise' | 'anticlockwise' | null
   >(null);
 
@@ -68,23 +70,27 @@ export default function JigsawCanvas() {
       uid: user.uid,
     });
     setDragPiece(null);
-    setRotating(null);
+    setRotatingDirection(null);
     clearRotationInterval();
   };
 
   useEffect(() => {
-    if (rotating && draggingPieceKey) {
+    if (rotatingDirection && draggingPieceKey) {
+      const doRotation = () =>
+        rotatePiece({
+          gameKey,
+          pieceKey: draggingPieceKey,
+          direction: rotatingDirection,
+        });
+
+      doRotation();
       updatePieceRotationInterval.current = setInterval(() => {
-        updatePieceRotation(draggingPieceKey, (prev: number) =>
-          rotating === 'clockwise'
-            ? prev + PIECE_ROTATION_AMOUNT
-            : prev - PIECE_ROTATION_AMOUNT,
-        );
+        doRotation();
       }, PIECE_ROTATION_INTERVAL);
 
       return clearRotationInterval;
     }
-  }, [rotating, draggingPieceKey]);
+  }, [rotatingDirection, draggingPieceKey, gameKey]);
 
   return (
     <CanvasWrapper
@@ -97,13 +103,13 @@ export default function JigsawCanvas() {
         const key = e.key.toLowerCase();
 
         if (key === keyboardShortcuts.ROTATE_CLOCKWISE) {
-          setRotating('clockwise');
+          setRotatingDirection('clockwise');
         } else if (key === keyboardShortcuts.ROTATE_ANTICLOCKWISE) {
-          setRotating('anticlockwise');
+          setRotatingDirection('anticlockwise');
         }
       }}
       onKeyUp={() => {
-        setRotating(null);
+        setRotatingDirection(null);
       }}
       onMouseUp={() => maybeCancelDrag()}
       onMouseLeave={() => maybeCancelDrag()}

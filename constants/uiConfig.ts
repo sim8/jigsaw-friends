@@ -1,2 +1,2 @@
-export const PIECE_ROTATION_AMOUNT = 2;
-export const PIECE_ROTATION_INTERVAL = 20;
+export const PIECE_ROTATION_AMOUNT = 10;
+export const PIECE_ROTATION_INTERVAL = 100;
