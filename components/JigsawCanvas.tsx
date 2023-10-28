@@ -14,7 +14,7 @@ import {
   JIGSAW_CONFIG,
 } from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
-import { pickUpPiece, releasePiece } from '../lib/actions';
+import { pickUpPiece, releasePiece, setPiecePos } from '../lib/actions';
 import useUser from '../hooks/useUser';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -113,10 +113,17 @@ export default function JigsawCanvas() {
           const pieceTop = top - dragPiece.pieceMouseOffsetY;
           const pieceLeft = left - dragPiece.pieceMouseOffsetX;
 
-          // TODO do we want to store "uncomitted" piece state locally?
-          setPieceState(draggingPieceKey, {
-            top: pieceTop,
+          // // TODO do we want to store "uncomitted" piece state locally?
+          // setPieceState(draggingPieceKey, {
+          //   top: pieceTop,
+          //   left: pieceLeft,
+          // });
+
+          setPiecePos({
+            gameKey,
+            pieceKey: draggingPieceKey,
             left: pieceLeft,
+            top: pieceTop,
           });
         }
       }}

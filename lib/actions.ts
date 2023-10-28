@@ -120,3 +120,21 @@ export function releasePiece({
     },
   );
 }
+
+export function setPiecePos({
+  gameKey,
+  pieceKey,
+  top,
+  left,
+}: {
+  gameKey: GameKey;
+  pieceKey: PieceKey;
+  top: number;
+  left: number;
+}) {
+  const { database } = getFirebase();
+  update(ref(database), {
+    [`games/${gameKey}/jigsaw/${pieceKey}/top`]: top,
+    [`games/${gameKey}/jigsaw/${pieceKey}/left`]: left,
+  });
+}
