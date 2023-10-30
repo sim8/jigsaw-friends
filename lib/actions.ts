@@ -115,6 +115,7 @@ export function releasePiece({
     ref(database, `games/${gameKey}/jigsaw/${pieceKey}/heldBy`),
     (currentData?: Uid) => {
       if (currentData !== uid) {
+        // TODO maybe log an error here? This should never happen
         return;
       }
       return null;
