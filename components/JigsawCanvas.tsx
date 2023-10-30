@@ -1,22 +1,23 @@
 import styled from 'styled-components';
-import useJigsawState from '../hooks/useJigsawState';
-import { DragPiece, JigsawConfig } from '../types';
+import { DragPiece } from '../types';
 import Piece from './Piece';
 import { useEffect, useRef, useState } from 'react';
 import { getMousePosWithinElement } from '../utils/dom';
 import { keyboardShortcuts } from '../constants/keyboardShortcuts';
+import { PIECE_ROTATION_INTERVAL } from '../constants/uiConfig';
 import {
-  PIECE_ROTATION_AMOUNT,
-  PIECE_ROTATION_INTERVAL,
-} from '../constants/uiConfig';
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  JIGSAW_CONFIG,
+} from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
-
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
-const JIGSAW_WIDTH = 400;
-const JIGSAW_HEIGHT = 300;
-const COLUMNS = 3;
-const ROWS = 2;
+import {
+  pickUpPiece,
+  releasePiece,
+  rotatePiece,
+  setPiecePos,
+} from '../lib/actions';
+import useUser from '../hooks/useUser';
 
 const CanvasWrapper = styled.div`
   outline: 7px solid #0099ff;
@@ -26,24 +27,21 @@ const CanvasWrapper = styled.div`
 `;
 
 export default function JigsawCanvas() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const game = useGame();
+  const { jigsaw: jigsawState, gameKey } = useGame();
+  const { user } = useUser();
+  if (!jigsawState) {
+    // TODO maybe enforce this through context?
+    throw new Error('jigsawState not defined but it should be!!!');
+  }
+
+  if (!user) {
+    throw new Error('TODO this should never happen');
+  }
+
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const jigsawConfig: JigsawConfig = Object.freeze({
-    canvasWidth: CANVAS_WIDTH,
-    canvasHeight: CANVAS_HEIGHT,
-    jigsawWidth: JIGSAW_WIDTH,
-    jigsawHeight: JIGSAW_HEIGHT,
-    columns: COLUMNS,
-    rows: ROWS,
-  });
-
-  const { jigsawState, setPieceState, updatePieceRotation } =
-    useJigsawState(jigsawConfig);
-
   const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
-  const [rotating, setRotating] = useState<
+  const [rotatingDirection, setRotatingDirection] = useState<
     'clockwise' | 'anticlockwise' | null
   >(null);
 
@@ -57,25 +55,37 @@ export default function JigsawCanvas() {
     }
   };
 
-  const cancelDrag = () => {
+  const maybeCancelDrag = () => {
+    if (!dragPiece) {
+      return;
+    }
+    releasePiece({
+      gameKey,
+      pieceKey: dragPiece.draggingPieceKey,
+      uid: user.uid,
+    });
     setDragPiece(null);
-    setRotating(null);
+    setRotatingDirection(null);
     clearRotationInterval();
   };
 
   useEffect(() => {
-    if (rotating && draggingPieceKey) {
+    if (rotatingDirection && draggingPieceKey) {
+      const doRotation = () =>
+        rotatePiece({
+          gameKey,
+          pieceKey: draggingPieceKey,
+          direction: rotatingDirection,
+        });
+
+      doRotation();
       updatePieceRotationInterval.current = setInterval(() => {
-        updatePieceRotation(draggingPieceKey, (prev) =>
-          rotating === 'clockwise'
-            ? prev + PIECE_ROTATION_AMOUNT
-            : prev - PIECE_ROTATION_AMOUNT,
-        );
+        doRotation();
       }, PIECE_ROTATION_INTERVAL);
 
       return clearRotationInterval;
     }
-  }, [rotating, draggingPieceKey, updatePieceRotation]);
+  }, [rotatingDirection, draggingPieceKey, gameKey]);
 
   return (
     <CanvasWrapper
@@ -88,24 +98,33 @@ export default function JigsawCanvas() {
         const key = e.key.toLowerCase();
 
         if (key === keyboardShortcuts.ROTATE_CLOCKWISE) {
-          setRotating('clockwise');
+          setRotatingDirection('clockwise');
         } else if (key === keyboardShortcuts.ROTATE_ANTICLOCKWISE) {
-          setRotating('anticlockwise');
+          setRotatingDirection('anticlockwise');
         }
       }}
       onKeyUp={() => {
-        setRotating(null);
+        setRotatingDirection(null);
       }}
-      onMouseUp={() => cancelDrag()}
-      onMouseLeave={() => cancelDrag()}
+      onMouseUp={() => maybeCancelDrag()}
+      onMouseLeave={() => maybeCancelDrag()}
       onMouseMove={(e) => {
         if (dragPiece && canvasRef.current && draggingPieceKey) {
           const { top, left } = getMousePosWithinElement(e, canvasRef.current);
           const pieceTop = top - dragPiece.pieceMouseOffsetY;
           const pieceLeft = left - dragPiece.pieceMouseOffsetX;
-          setPieceState(draggingPieceKey, {
-            top: pieceTop,
+
+          // // TODO do we want to store "uncomitted" piece state locally?
+          // setPieceState(draggingPieceKey, {
+          //   top: pieceTop,
+          //   left: pieceLeft,
+          // });
+
+          setPiecePos({
+            gameKey,
+            pieceKey: draggingPieceKey,
             left: pieceLeft,
+            top: pieceTop,
           });
         }
       }}
@@ -116,20 +135,29 @@ export default function JigsawCanvas() {
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
-            jigsawConfig={jigsawConfig}
+            jigsawConfig={JIGSAW_CONFIG}
             onMouseDown={(e) => {
               if (canvasRef.current) {
-                const { top, left } = getMousePosWithinElement(
-                  e,
-                  canvasRef.current,
-                );
-                const pieceMouseOffsetX = left - pieceState.left;
-                const pieceMouseOffsetY = top - pieceState.top;
+                pickUpPiece({
+                  gameKey,
+                  pieceKey,
+                  uid: user.uid,
+                }).then((transactionResult) => {
+                  if (transactionResult.committed && canvasRef.current) {
+                    // only here do we want to send piece updates
+                    const { top, left } = getMousePosWithinElement(
+                      e,
+                      canvasRef.current,
+                    );
+                    const pieceMouseOffsetX = left - pieceState.left;
+                    const pieceMouseOffsetY = top - pieceState.top;
 
-                setDragPiece({
-                  draggingPieceKey: pieceKey,
-                  pieceMouseOffsetX,
-                  pieceMouseOffsetY,
+                    setDragPiece({
+                      draggingPieceKey: pieceKey,
+                      pieceMouseOffsetX,
+                      pieceMouseOffsetY,
+                    });
+                  }
                 });
               }
             }}

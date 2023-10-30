@@ -1,4 +1,4 @@
 export const keyboardShortcuts = {
-  ROTATE_CLOCKWISE: 'r',
-  ROTATE_ANTICLOCKWISE: 'w',
+  ROTATE_CLOCKWISE: 'arrowright',
+  ROTATE_ANTICLOCKWISE: 'arrowleft',
 };
