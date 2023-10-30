@@ -19,11 +19,6 @@ import {
 } from '../lib/actions';
 import useUser from '../hooks/useUser';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const updatePieceRotation = (...args: unknown[]) => {};
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const setPieceState = (...args: unknown[]) => {};
-
 const CanvasWrapper = styled.div`
   outline: 7px solid #0099ff;
   height: ${CANVAS_HEIGHT}px;
@@ -148,21 +143,21 @@ export default function JigsawCanvas() {
                   pieceKey,
                   uid: user.uid,
                 }).then((transactionResult) => {
-                  if (transactionResult.committed) {
+                  if (transactionResult.committed && canvasRef.current) {
                     // only here do we want to send piece updates
-                  }
-                });
-                const { top, left } = getMousePosWithinElement(
-                  e,
-                  canvasRef.current,
-                );
-                const pieceMouseOffsetX = left - pieceState.left;
-                const pieceMouseOffsetY = top - pieceState.top;
+                    const { top, left } = getMousePosWithinElement(
+                      e,
+                      canvasRef.current,
+                    );
+                    const pieceMouseOffsetX = left - pieceState.left;
+                    const pieceMouseOffsetY = top - pieceState.top;
 
-                setDragPiece({
-                  draggingPieceKey: pieceKey,
-                  pieceMouseOffsetX,
-                  pieceMouseOffsetY,
+                    setDragPiece({
+                      draggingPieceKey: pieceKey,
+                      pieceMouseOffsetX,
+                      pieceMouseOffsetY,
+                    });
+                  }
                 });
               }
             }}
