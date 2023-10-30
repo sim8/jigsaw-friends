@@ -24,10 +24,10 @@ export type JigsawConfig = {
   columns: number;
 };
 
-export type DragPiece = {
+export type DragPieceInfo = {
   draggingPieceKey: PieceKey;
-  pieceMouseOffsetX: number;
-  pieceMouseOffsetY: number;
+  initialPieceMouseOffsetX: number;
+  initialPieceMouseOffsetY: number;
 };
 
 export type User = {

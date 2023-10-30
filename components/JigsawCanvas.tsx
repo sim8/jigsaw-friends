@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { DragPiece } from '../types';
+import { DragPieceInfo } from '../types';
 import Piece from './Piece';
 import { useEffect, useRef, useState } from 'react';
 import { getMousePosWithinElement } from '../utils/dom';
@@ -40,12 +40,14 @@ export default function JigsawCanvas() {
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const [dragPiece, setDragPiece] = useState<DragPiece | null>(null);
+  const [dragPieceInfo, setDragPieceInfo] = useState<DragPieceInfo | null>(
+    null,
+  );
   const [rotatingDirection, setRotatingDirection] = useState<
     'clockwise' | 'anticlockwise' | null
   >(null);
 
-  const { draggingPieceKey } = dragPiece || {};
+  const { draggingPieceKey } = dragPieceInfo || {};
 
   const updatePieceRotationInterval = useRef<NodeJS.Timer | null>(null);
 
@@ -56,15 +58,15 @@ export default function JigsawCanvas() {
   };
 
   const maybeCancelDrag = () => {
-    if (!dragPiece) {
+    if (!dragPieceInfo) {
       return;
     }
     releasePiece({
       gameKey,
-      pieceKey: dragPiece.draggingPieceKey,
+      pieceKey: dragPieceInfo.draggingPieceKey,
       uid: user.uid,
     });
-    setDragPiece(null);
+    setDragPieceInfo(null);
     setRotatingDirection(null);
     clearRotationInterval();
   };
@@ -109,10 +111,10 @@ export default function JigsawCanvas() {
       onMouseUp={() => maybeCancelDrag()}
       onMouseLeave={() => maybeCancelDrag()}
       onMouseMove={(e) => {
-        if (dragPiece && canvasRef.current && draggingPieceKey) {
+        if (dragPieceInfo && canvasRef.current && draggingPieceKey) {
           const { top, left } = getMousePosWithinElement(e, canvasRef.current);
-          const pieceTop = top - dragPiece.pieceMouseOffsetY;
-          const pieceLeft = left - dragPiece.pieceMouseOffsetX;
+          const pieceTop = top - dragPieceInfo.initialPieceMouseOffsetY;
+          const pieceLeft = left - dragPieceInfo.initialPieceMouseOffsetX;
 
           // // TODO do we want to store "uncomitted" piece state locally?
           // setPieceState(draggingPieceKey, {
@@ -149,13 +151,13 @@ export default function JigsawCanvas() {
                       e,
                       canvasRef.current,
                     );
-                    const pieceMouseOffsetX = left - pieceState.left;
-                    const pieceMouseOffsetY = top - pieceState.top;
+                    const initialPieceMouseOffsetX = left - pieceState.left;
+                    const initialPieceMouseOffsetY = top - pieceState.top;
 
-                    setDragPiece({
+                    setDragPieceInfo({
                       draggingPieceKey: pieceKey,
-                      pieceMouseOffsetX,
-                      pieceMouseOffsetY,
+                      initialPieceMouseOffsetX,
+                      initialPieceMouseOffsetY,
                     });
                   }
                 });
