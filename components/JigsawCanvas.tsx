@@ -25,7 +25,7 @@ export default function JigsawCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const {
-    dragPieceInfo,
+    dragPieceInfoRef,
     setRotatingDirection,
     onCancelDrag,
     onDrag,
@@ -41,14 +41,12 @@ export default function JigsawCanvas() {
     throw new Error('TODO this should never happen');
   }
 
-  const { draggingPieceKey } = dragPieceInfo || {};
-
   return (
     <CanvasWrapper
       ref={canvasRef}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (!draggingPieceKey) {
+        if (!dragPieceInfoRef.current) {
           return;
         }
         const key = e.key.toLowerCase();
@@ -65,7 +63,7 @@ export default function JigsawCanvas() {
       onMouseUp={() => onCancelDrag()}
       onMouseLeave={() => onCancelDrag()}
       onMouseMove={(e) => {
-        if (dragPieceInfo) {
+        if (dragPieceInfoRef.current) {
           onDrag(e);
         }
       }}
@@ -80,7 +78,7 @@ export default function JigsawCanvas() {
             onMouseDown={(e) => {
               onMouseDown(e, pieceKey, pieceState);
             }}
-            isDragging={draggingPieceKey === pieceKey}
+            isDragging={pieceState.heldBy === user.uid}
           />
         );
       })}
