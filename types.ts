@@ -28,6 +28,7 @@ export type DragPieceInfo = {
   draggingPieceKey: PieceKey;
   initialPieceMouseOffsetX: number;
   initialPieceMouseOffsetY: number;
+  committed: boolean;
 };
 
 export type User = {

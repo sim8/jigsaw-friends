@@ -9,10 +9,11 @@ import {
   serverTimestamp,
 } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
-import { Game, GameKey, PieceKey, Uid } from '../types';
+import { Game, GameKey, PieceKey, PieceState, Uid } from '../types';
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
+import { mapKeys } from '../utils/object';
 
 const createGame = (userCredential: UserCredential): GameKey | null => {
   const { database } = getFirebase();
@@ -159,4 +160,36 @@ export function rotatePiece({
         : prev - PIECE_ROTATION_AMOUNT;
     },
   );
+}
+
+export function cancellablePieceUpdate({
+  gameKey,
+  pieceKey,
+  uid,
+  committed,
+  updates,
+}: {
+  gameKey: GameKey;
+  pieceKey: PieceKey;
+  uid: Uid;
+  committed: boolean;
+  updates: Partial<PieceState>;
+}) {
+  const { database } = getFirebase();
+  const piecePath = `games/${gameKey}/jigsaw/${pieceKey}`;
+
+  if (committed) {
+    const withPaths = mapKeys(updates, (field) => `${piecePath}/${field}`);
+    update(ref(database), withPaths);
+  } else {
+    runTransaction(ref(database, piecePath), (pieceState: PieceState) => {
+      if (pieceState.heldBy !== uid) {
+        return;
+      }
+      return {
+        ...pieceState,
+        ...updates,
+      };
+    });
+  }
 }
