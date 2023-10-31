@@ -10,10 +10,10 @@ import useGame from '../hooks/useGame';
 import useUser from '../hooks/useUser';
 import { DragPieceInfo, PieceKey, PieceState } from '../types';
 import {
+  cancellablePieceUpdate,
   pickUpPiece,
   releasePiece,
   rotatePiece,
-  setPiecePos,
 } from '../lib/actions';
 import { PIECE_ROTATION_INTERVAL } from '../constants/uiConfig';
 import { getMousePosWithinElement } from '../utils/dom';
@@ -31,9 +31,8 @@ export default function usePieceUpdates({
     throw new Error('TODO this should never happen');
   }
 
-  const [dragPieceInfo, setDragPieceInfo] = useState<DragPieceInfo | null>(
-    null,
-  );
+  const dragPieceInfoRef = useRef<DragPieceInfo | null>(null);
+
   const [rotatingDirection, setRotatingDirection] = useState<
     'clockwise' | 'anticlockwise' | null
   >(null);
@@ -47,29 +46,30 @@ export default function usePieceUpdates({
   };
 
   const onCancelDrag = () => {
-    if (!dragPieceInfo) {
+    if (!dragPieceInfoRef.current) {
       return;
     }
     releasePiece({
       gameKey,
-      pieceKey: dragPieceInfo.draggingPieceKey,
+      pieceKey: dragPieceInfoRef.current.draggingPieceKey,
       uid: user.uid,
     });
-    setDragPieceInfo(null);
+    dragPieceInfoRef.current = null;
     setRotatingDirection(null);
     clearRotationInterval();
   };
 
-  const { draggingPieceKey } = dragPieceInfo || {};
-
   useEffect(() => {
-    if (rotatingDirection && draggingPieceKey) {
-      const doRotation = () =>
-        rotatePiece({
-          gameKey,
-          pieceKey: draggingPieceKey,
-          direction: rotatingDirection,
-        });
+    if (rotatingDirection && dragPieceInfoRef.current) {
+      const doRotation = () => {
+        if (dragPieceInfoRef.current) {
+          rotatePiece({
+            gameKey,
+            pieceKey: dragPieceInfoRef.current.draggingPieceKey,
+            direction: rotatingDirection,
+          });
+        }
+      };
 
       doRotation();
       updatePieceRotationInterval.current = setInterval(() => {
@@ -78,16 +78,17 @@ export default function usePieceUpdates({
 
       return clearRotationInterval;
     }
-  }, [rotatingDirection, draggingPieceKey, gameKey]);
+  }, [rotatingDirection, dragPieceInfoRef, gameKey]);
 
   const onDrag = useCallback(
     (e: MouseEvent<HTMLElement>) => {
-      if (!dragPieceInfo || !canvasRef.current) {
+      if (!dragPieceInfoRef.current || !canvasRef.current) {
         return;
       }
       const { top, left } = getMousePosWithinElement(e, canvasRef.current);
-      const pieceTop = top - dragPieceInfo.initialPieceMouseOffsetY;
-      const pieceLeft = left - dragPieceInfo.initialPieceMouseOffsetX;
+      const pieceTop = top - dragPieceInfoRef.current.initialPieceMouseOffsetY;
+      const pieceLeft =
+        left - dragPieceInfoRef.current.initialPieceMouseOffsetX;
 
       // // TODO do we want to store "uncomitted" piece state locally?
       // setPieceState(draggingPieceKey, {
@@ -95,14 +96,25 @@ export default function usePieceUpdates({
       //   left: pieceLeft,
       // });
 
-      setPiecePos({
+      cancellablePieceUpdate({
         gameKey,
-        pieceKey: dragPieceInfo.draggingPieceKey,
-        left: pieceLeft,
-        top: pieceTop,
+        pieceKey: dragPieceInfoRef.current.draggingPieceKey,
+        uid: user.uid,
+        committed: dragPieceInfoRef.current.committed,
+        updates: {
+          left: pieceLeft,
+          top: pieceTop,
+        },
       });
+
+      // setPiecePos({
+      //   gameKey,
+      //   pieceKey: dragPieceInfo.draggingPieceKey,
+      //   left: pieceLeft,
+      //   top: pieceTop,
+      // });
     },
-    [canvasRef, dragPieceInfo, gameKey],
+    [canvasRef, dragPieceInfoRef, gameKey, user.uid],
   );
 
   const onMouseDown = useCallback(
@@ -112,25 +124,23 @@ export default function usePieceUpdates({
       pieceState: PieceState,
     ) => {
       if (canvasRef.current) {
+        const { top, left } = getMousePosWithinElement(e, canvasRef.current);
+        const initialPieceMouseOffsetX = left - pieceState.left;
+        const initialPieceMouseOffsetY = top - pieceState.top;
+
+        dragPieceInfoRef.current = {
+          draggingPieceKey: pieceKey,
+          initialPieceMouseOffsetX,
+          initialPieceMouseOffsetY,
+          committed: false,
+        };
         pickUpPiece({
           gameKey,
           pieceKey,
           uid: user.uid,
         }).then((transactionResult) => {
-          if (transactionResult.committed && canvasRef.current) {
-            // only here do we want to send piece updates
-            const { top, left } = getMousePosWithinElement(
-              e,
-              canvasRef.current,
-            );
-            const initialPieceMouseOffsetX = left - pieceState.left;
-            const initialPieceMouseOffsetY = top - pieceState.top;
-
-            setDragPieceInfo({
-              draggingPieceKey: pieceKey,
-              initialPieceMouseOffsetX,
-              initialPieceMouseOffsetY,
-            });
+          if (dragPieceInfoRef.current && transactionResult.committed) {
+            dragPieceInfoRef.current.committed = true;
           }
         });
       }
@@ -142,7 +152,7 @@ export default function usePieceUpdates({
     onMouseDown,
     onDrag,
     onCancelDrag,
-    dragPieceInfo,
+    dragPieceInfoRef,
     setRotatingDirection,
   };
 }
