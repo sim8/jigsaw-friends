@@ -96,6 +96,20 @@ export default function usePieceUpdates({
       //   left: pieceLeft,
       // });
 
+      // console.log('I'.repeat(Math.floor(pieceLeft / 10)));
+
+      if (dragPieceInfoRef.current.committed) {
+        console.log('%c COMMITTED ', 'color: #00cc29');
+      } else {
+        console.log('%c DRAFT ', 'color: #d90000');
+      }
+
+      console.log(
+        'setting:  ',
+        'I'.repeat(Math.floor(pieceLeft / 5)),
+        ` (${Math.floor(pieceLeft)})`,
+      );
+
       cancellablePieceUpdate({
         gameKey,
         pieceKey: dragPieceInfoRef.current.draggingPieceKey,

@@ -29,6 +29,13 @@ export default function Piece({
   isDragging,
   onMouseDown,
 }: Props) {
+  if (pieceKey === '0,0') {
+    console.log(
+      'received: ',
+      'I'.repeat(Math.floor(pieceState.left / 5)),
+      ` (${Math.floor(pieceState.left)})`,
+    );
+  }
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
   const pieceWidth = getPieceWidth(
