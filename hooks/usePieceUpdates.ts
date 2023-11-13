@@ -17,16 +17,17 @@ import {
 } from '../lib/actions';
 import { PIECE_ROTATION_INTERVAL } from '../constants/uiConfig';
 import { getMousePosWithinElement } from '../utils/dom';
+import usePieceJoins from './usePieceJoins';
 
 export default function usePieceUpdates({
   canvasRef,
 }: {
   canvasRef: RefObject<HTMLDivElement>;
 }) {
-  const { gameKey } = useGame();
+  const { gameKey, jigsaw } = useGame();
   const { user } = useUser();
 
-  if (!user) {
+  if (!user || !jigsaw) {
     // TODO maybe enforce this through context?
     throw new Error('TODO this should never happen');
   }
@@ -34,6 +35,12 @@ export default function usePieceUpdates({
   const [dragPieceInfo, setDragPieceInfo] = useState<DragPieceInfo | null>(
     null,
   );
+
+  const { maybeJoinPieces } = usePieceJoins({
+    dragPieceInfo,
+    jigsaw,
+  });
+
   const [rotatingDirection, setRotatingDirection] = useState<
     'clockwise' | 'anticlockwise' | null
   >(null);
@@ -95,6 +102,8 @@ export default function usePieceUpdates({
       //   left: pieceLeft,
       // });
 
+      maybeJoinPieces();
+
       setPiecePos({
         gameKey,
         pieceKey: dragPieceInfo.draggingPieceKey,
@@ -102,7 +111,7 @@ export default function usePieceUpdates({
         top: pieceTop,
       });
     },
-    [canvasRef, dragPieceInfo, gameKey],
+    [maybeJoinPieces, canvasRef, dragPieceInfo, gameKey],
   );
 
   const onMouseDown = useCallback(

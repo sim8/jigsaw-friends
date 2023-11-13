@@ -20,7 +20,8 @@ export function generateJigsawState({
         top:
           Math.random() * (canvasHeight - getPieceHeight(jigsawHeight, rows)),
         left: Math.random() * (canvasWidth - getPieceWidth(jigsawWidth, rows)),
-        rotation: Math.random() * 360,
+        // rotation: Math.random() * 360, // TODO rotate joining vectors
+        rotation: 0,
       };
       jigsawState[pieceKey] = pieceState;
     });

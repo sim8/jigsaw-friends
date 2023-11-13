@@ -49,8 +49,8 @@ export default function Piece({
       isDragging={isDragging}
       style={{
         backgroundSize: `${jigsawConfig.jigsawWidth}px ${jigsawConfig.jigsawHeight}px`,
-        backgroundPositionX: pieceWidth * colIndex,
-        backgroundPositionY: pieceHeight * rowIndex,
+        backgroundPositionX: -(pieceWidth * colIndex),
+        backgroundPositionY: -(pieceHeight * rowIndex),
         width: pieceWidth,
         height: pieceHeight,
         top,
