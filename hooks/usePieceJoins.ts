@@ -1,15 +1,19 @@
 import { useMemo } from 'react';
-import { DragPieceInfo, JigsawState, Vector } from '../types';
+import { DragPieceInfo, JigsawState } from '../types';
 import {
-  getActualPieceVector,
+  getPieceDistance,
   getPieceHeight,
-  getPieceVectorRequiredForJoining,
+  getPieceRotationDifference,
   getPieceWidth,
   getPossibleNeighbouringPieceKeys,
+  getRequiredStateToJoinNeighbour,
 } from '../utils/pieces';
 import { calcHypotenuse } from '../utils/misc';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
-import { PIECE_SNAP_THRESHOLD_PERCENTAGE } from '../constants/uiConfig';
+import {
+  PIECE_SNAP_ROTATION_THRESHOLD,
+  PIECE_SNAP_DISTANCE_PERCENTAGE_THRESHOLD,
+} from '../constants/uiConfig';
 
 export default function usePieceJoins({
   jigsaw,
@@ -36,7 +40,7 @@ export default function usePieceJoins({
       JIGSAW_CONFIG.rows,
     );
     const pieceDiagonal = calcHypotenuse(pieceWidth, pieceHeight);
-    return pieceDiagonal * PIECE_SNAP_THRESHOLD_PERCENTAGE;
+    return pieceDiagonal * PIECE_SNAP_DISTANCE_PERCENTAGE_THRESHOLD;
   }, []);
 
   return {
@@ -49,23 +53,24 @@ export default function usePieceJoins({
       if (possibleNeighbouringPieceKeys) {
         possibleNeighbouringPieceKeys.forEach(
           (possibleNeighbouringPieceKey) => {
-            const actualVector = getActualPieceVector(
+            const requiredStateToJoinNeighbour =
+              getRequiredStateToJoinNeighbour({
+                heldPieceKey: draggingPieceKey,
+                neighbourKey: possibleNeighbouringPieceKey,
+                neighbourState: jigsaw[possibleNeighbouringPieceKey],
+              });
+            const distance = getPieceDistance(
               piece,
-              jigsaw[possibleNeighbouringPieceKey],
+              requiredStateToJoinNeighbour,
             );
-            const vectorRequiredForJoining = getPieceVectorRequiredForJoining(
-              draggingPieceKey,
-              possibleNeighbouringPieceKey,
+            const rotationDifference = getPieceRotationDifference(
+              piece,
+              requiredStateToJoinNeighbour,
             );
-            const actualToRequiredDelta: Vector = [
-              vectorRequiredForJoining[0] - actualVector[0],
-              vectorRequiredForJoining[1] - actualVector[1],
-            ];
-            const actualToRequiredDeltaDistance = calcHypotenuse(
-              actualToRequiredDelta[0],
-              actualToRequiredDelta[1],
-            );
-            if (actualToRequiredDeltaDistance < pieceSnapThresholdDistance) {
+            if (
+              distance <= pieceSnapThresholdDistance &&
+              rotationDifference <= PIECE_SNAP_ROTATION_THRESHOLD
+            ) {
               console.log('JOIN!!!!!');
             }
           },

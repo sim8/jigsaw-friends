@@ -1,5 +1,6 @@
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { Piece, PieceKey, PieceState, Vector } from '../types';
+import { calcHypotenuse } from './misc';
 
 export function getPieceKey(piece: Piece) {
   return `${piece.colIndex},${piece.rowIndex}`;
@@ -54,7 +55,7 @@ export function getPossibleNeighbouringPieceKeys(pieceKey: PieceKey) {
   return potentialPieces.filter(arePieceCoordinatesValid).map(getPieceKey);
 }
 
-export function getPieceVectorRequiredForJoining(
+function getPieceVectorRequiredForJoining(
   pieceAKey: PieceKey,
   pieceBKey: PieceKey,
 ): Vector {
@@ -68,12 +69,47 @@ export function getPieceVectorRequiredForJoining(
   ];
 }
 
-export function getActualPieceVector(
-  pieceAState: PieceState,
-  pieceBState: PieceState,
-): Vector {
+// Thank you https://stackoverflow.com/a/28112459/22839249
+function rotateVector(vector: Vector, ang: number) {
+  const radians = ang * (Math.PI / 180);
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
   return [
-    pieceBState.left - pieceAState.left,
-    pieceBState.top - pieceAState.top,
+    Math.round(10000 * (vector[0] * cos - vector[1] * sin)) / 10000,
+    Math.round(10000 * (vector[0] * sin + vector[1] * cos)) / 10000,
   ];
+}
+
+export function getRequiredStateToJoinNeighbour({
+  heldPieceKey,
+  neighbourKey,
+  neighbourState,
+}: {
+  heldPieceKey: PieceKey;
+  neighbourKey: PieceKey;
+  neighbourState: PieceState;
+}): PieceState {
+  const unrotatedVector = getPieceVectorRequiredForJoining(
+    neighbourKey,
+    heldPieceKey,
+  );
+  const rotatedVector = rotateVector(unrotatedVector, neighbourState.rotation);
+  return {
+    ...neighbourState,
+    left: neighbourState.left + rotatedVector[0],
+    top: neighbourState.top + rotatedVector[1],
+  };
+}
+
+export function getPieceDistance(pieceA: PieceState, pieceB: PieceState) {
+  const vector: Vector = [pieceB.left - pieceA.left, pieceB.top - pieceA.top];
+  return calcHypotenuse(...vector);
+}
+
+export function getPieceRotationDifference(
+  pieceA: PieceState,
+  pieceB: PieceState,
+) {
+  const diff = Math.abs(pieceB.rotation - pieceA.rotation);
+  return Math.min(diff, 360 - diff);
 }
