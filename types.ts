@@ -56,3 +56,5 @@ export type Game = {
 };
 
 export type GameWithKey = Game & { gameKey: GameKey };
+
+export type Vector = [number, number];
