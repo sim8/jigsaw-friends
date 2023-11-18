@@ -3,13 +3,15 @@ import {
   ref,
   child,
   push,
+  get,
   set,
   update,
+  remove,
   runTransaction,
   serverTimestamp,
 } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
-import { Game, GameKey, PieceKey, Uid } from '../types';
+import { Game, GameKey, PieceKey, PieceState, Uid } from '../types';
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
@@ -121,6 +123,47 @@ export function releasePiece({
       return null;
     },
   );
+}
+
+export async function joinPiece({
+  gameKey,
+  heldPieceKey,
+  joiningPieceKey,
+}: {
+  gameKey: GameKey;
+  heldPieceKey: PieceKey;
+  joiningPieceKey: PieceKey;
+}) {
+  const { database } = getFirebase();
+
+  const dataSnapshot = await get(
+    ref(database, `games/${gameKey}/jigsaw/${heldPieceKey}/childPieces`),
+  );
+  const heldChildPieces = dataSnapshot.val() as PieceState['childPieces'];
+
+  const transactionResult = await runTransaction(
+    ref(database, `games/${gameKey}/jigsaw/${joiningPieceKey}`),
+    (currentData: PieceState): PieceState | undefined => {
+      if (currentData.heldBy) {
+        // avoid weirdness by not allowing joining two held pieces
+        return;
+      }
+      return {
+        ...currentData,
+        childPieces: {
+          ...currentData.childPieces,
+          ...(heldChildPieces || {}),
+          [heldPieceKey]: true,
+        },
+      };
+    },
+  );
+
+  if (transactionResult.committed) {
+    remove(ref(database, `games/${gameKey}/jigsaw/${heldPieceKey}`));
+  }
+
+  return transactionResult;
 }
 
 export function setPiecePos({

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { DragPieceInfo, JigsawState } from '../types';
+import { DragPieceInfo, JigsawState, PieceKey } from '../types';
 import {
   getPieceDistance,
   getPieceHeight,
@@ -44,38 +44,37 @@ export default function usePieceJoins({
   }, []);
 
   return {
-    maybeJoinPieces: () => {
-      if (!draggingPieceKey) {
-        return;
+    getJoinablePiece: (): PieceKey | null => {
+      if (!draggingPieceKey || !possibleNeighbouringPieceKeys) {
+        return null;
       }
       const piece = jigsaw[draggingPieceKey];
 
-      if (possibleNeighbouringPieceKeys) {
-        possibleNeighbouringPieceKeys.forEach(
-          (possibleNeighbouringPieceKey) => {
-            const requiredStateToJoinNeighbour =
-              getRequiredStateToJoinNeighbour({
-                heldPieceKey: draggingPieceKey,
-                neighbourKey: possibleNeighbouringPieceKey,
-                neighbourState: jigsaw[possibleNeighbouringPieceKey],
-              });
-            const distance = getPieceDistance(
-              piece,
-              requiredStateToJoinNeighbour,
-            );
-            const rotationDifference = getPieceRotationDifference(
-              piece,
-              requiredStateToJoinNeighbour,
-            );
-            if (
-              distance <= pieceSnapThresholdDistance &&
-              rotationDifference <= PIECE_SNAP_ROTATION_THRESHOLD
-            ) {
-              console.log('JOIN!!!!!');
-            }
-          },
+      for (const possibleNeighbouringPieceKey of possibleNeighbouringPieceKeys) {
+        const neighbourState = jigsaw[possibleNeighbouringPieceKey];
+        if (neighbourState.heldBy) {
+          // avoid weirdness by not allowing joining two held pieces
+          return null;
+        }
+        const requiredStateToJoinNeighbour = getRequiredStateToJoinNeighbour({
+          heldPieceKey: draggingPieceKey,
+          neighbourKey: possibleNeighbouringPieceKey,
+          neighbourState,
+        });
+        const distance = getPieceDistance(piece, requiredStateToJoinNeighbour);
+        const rotationDifference = getPieceRotationDifference(
+          piece,
+          requiredStateToJoinNeighbour,
         );
+        if (
+          distance <= pieceSnapThresholdDistance &&
+          rotationDifference <= PIECE_SNAP_ROTATION_THRESHOLD
+        ) {
+          return possibleNeighbouringPieceKey;
+        }
       }
+
+      return null;
     },
   };
 }

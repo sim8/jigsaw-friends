@@ -10,6 +10,7 @@ import useGame from '../hooks/useGame';
 import useUser from '../hooks/useUser';
 import { DragPieceInfo, PieceKey, PieceState } from '../types';
 import {
+  joinPiece,
   pickUpPiece,
   releasePiece,
   rotatePiece,
@@ -36,7 +37,7 @@ export default function usePieceUpdates({
     null,
   );
 
-  const { maybeJoinPieces } = usePieceJoins({
+  const { getJoinablePiece } = usePieceJoins({
     dragPieceInfo,
     jigsaw,
   });
@@ -53,15 +54,29 @@ export default function usePieceUpdates({
     }
   };
 
-  const onCancelDrag = () => {
+  const onCancelDrag = async (didDrop?: boolean) => {
+    let didJoin = false;
     if (!dragPieceInfo) {
       return;
     }
-    releasePiece({
-      gameKey,
-      pieceKey: dragPieceInfo.draggingPieceKey,
-      uid: user.uid,
-    });
+    if (didDrop) {
+      const joinablePiece = getJoinablePiece();
+      if (joinablePiece) {
+        const transactionResult = await joinPiece({
+          gameKey,
+          heldPieceKey: dragPieceInfo.draggingPieceKey,
+          joiningPieceKey: joinablePiece,
+        });
+        didJoin = transactionResult.committed;
+      }
+    }
+    if (!didJoin) {
+      releasePiece({
+        gameKey,
+        pieceKey: dragPieceInfo.draggingPieceKey,
+        uid: user.uid,
+      });
+    }
     setDragPieceInfo(null);
     setRotatingDirection(null);
     clearRotationInterval();
@@ -102,8 +117,6 @@ export default function usePieceUpdates({
       //   left: pieceLeft,
       // });
 
-      maybeJoinPieces();
-
       setPiecePos({
         gameKey,
         pieceKey: dragPieceInfo.draggingPieceKey,
@@ -111,7 +124,7 @@ export default function usePieceUpdates({
         top: pieceTop,
       });
     },
-    [maybeJoinPieces, canvasRef, dragPieceInfo, gameKey],
+    [canvasRef, dragPieceInfo, gameKey],
   );
 
   const onMouseDown = useCallback(
