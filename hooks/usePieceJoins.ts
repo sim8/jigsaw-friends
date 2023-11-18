@@ -52,6 +52,10 @@ export default function usePieceJoins({
 
       for (const possibleNeighbouringPieceKey of possibleNeighbouringPieceKeys) {
         const neighbourState = jigsaw[possibleNeighbouringPieceKey];
+        if (!neighbourState) {
+          // TODO remove. Need to find neighbour in composite piece instead
+          return null;
+        }
         if (neighbourState.heldBy) {
           // avoid weirdness by not allowing joining two held pieces
           return null;
