@@ -62,7 +62,7 @@ export default function JigsawCanvas() {
       onKeyUp={() => {
         setRotatingDirection(null);
       }}
-      onMouseUp={() => onCancelDrag()}
+      onMouseUp={() => onCancelDrag(true)}
       onMouseLeave={() => onCancelDrag()}
       onMouseMove={(e) => {
         if (dragPieceInfo) {
