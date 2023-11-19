@@ -5,8 +5,9 @@ import {
   getPieceHeight,
   getPieceRotationDifference,
   getPieceWidth,
-  getPossibleNeighbouringPieceKeys,
+  getSolutionNeighbourKeys,
   getRequiredStateToJoinNeighbour,
+  getParentPieceKey,
 } from '../utils/pieces';
 import { calcHypotenuse } from '../utils/misc';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
@@ -23,11 +24,11 @@ export default function usePieceJoins({
   dragPieceInfo: DragPieceInfo | null;
 }) {
   const { draggingPieceKey } = dragPieceInfo || {};
-  const possibleNeighbouringPieceKeys = useMemo(() => {
+  const solutionNeighbourKeys = useMemo(() => {
     if (!draggingPieceKey) {
       return null;
     }
-    return getPossibleNeighbouringPieceKeys(draggingPieceKey);
+    return getSolutionNeighbourKeys(draggingPieceKey);
   }, [draggingPieceKey]);
 
   const pieceSnapThresholdDistance = useMemo(() => {
@@ -45,24 +46,25 @@ export default function usePieceJoins({
 
   return {
     getJoinablePiece: (): PieceKey | null => {
-      if (!draggingPieceKey || !possibleNeighbouringPieceKeys) {
+      if (!draggingPieceKey || !solutionNeighbourKeys) {
         return null;
       }
       const piece = jigsaw[draggingPieceKey];
 
-      for (const possibleNeighbouringPieceKey of possibleNeighbouringPieceKeys) {
-        const neighbourState = jigsaw[possibleNeighbouringPieceKey];
-        if (!neighbourState) {
-          // TODO remove. Need to find neighbour in composite piece instead
-          return null;
-        }
+      for (const solutionNeighbourKey of solutionNeighbourKeys) {
+        const neighbourKey =
+          solutionNeighbourKey in jigsaw
+            ? solutionNeighbourKey
+            : getParentPieceKey(jigsaw, solutionNeighbourKey);
+        const neighbourState = jigsaw[neighbourKey];
+
         if (neighbourState.heldBy) {
           // avoid weirdness by not allowing joining two held pieces
           return null;
         }
         const requiredStateToJoinNeighbour = getRequiredStateToJoinNeighbour({
           heldPieceKey: draggingPieceKey,
-          neighbourKey: possibleNeighbouringPieceKey,
+          neighbourKey,
           neighbourState,
         });
         const distance = getPieceDistance(piece, requiredStateToJoinNeighbour);
@@ -74,7 +76,7 @@ export default function usePieceJoins({
           distance <= pieceSnapThresholdDistance &&
           rotationDifference <= PIECE_SNAP_ROTATION_THRESHOLD
         ) {
-          return possibleNeighbouringPieceKey;
+          return neighbourKey;
         }
       }
 

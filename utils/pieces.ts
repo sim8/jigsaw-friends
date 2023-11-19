@@ -1,5 +1,5 @@
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
-import { Piece, PieceKey, PieceState, Vector } from '../types';
+import { JigsawState, Piece, PieceKey, PieceState, Vector } from '../types';
 import { calcHypotenuse } from './misc';
 
 export function getPieceKey(piece: Piece) {
@@ -30,7 +30,7 @@ function arePieceCoordinatesValid(piece: Piece) {
   return columnValid && rowValid;
 }
 
-export function getPossibleNeighbouringPieceKeys(pieceKey: PieceKey) {
+export function getSolutionNeighbourKeys(pieceKey: PieceKey) {
   const piece = getPieceFromKey(pieceKey);
 
   const potentialPieces: Piece[] = [
@@ -109,4 +109,15 @@ export function getPieceRotationDifference(
 ) {
   const diff = Math.abs(pieceB.rotation - pieceA.rotation);
   return Math.min(diff, 360 - diff);
+}
+
+export function getParentPieceKey(jigsaw: JigsawState, childKey: PieceKey) {
+  const parentEntry = Object.entries(jigsaw).find(
+    ([, pieceState]) =>
+      pieceState.childPieces && childKey in pieceState.childPieces,
+  );
+  if (!parentEntry) {
+    throw new Error(`Couldn't find parent piece`);
+  }
+  return parentEntry[0];
 }
