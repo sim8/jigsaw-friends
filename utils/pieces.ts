@@ -55,7 +55,7 @@ export function getPossibleNeighbouringPieceKeys(pieceKey: PieceKey) {
   return potentialPieces.filter(arePieceCoordinatesValid).map(getPieceKey);
 }
 
-function getPieceVectorRequiredForJoining(
+export function getSolutionPieceVector(
   pieceAKey: PieceKey,
   pieceBKey: PieceKey,
 ): Vector {
@@ -89,10 +89,7 @@ export function getRequiredStateToJoinNeighbour({
   neighbourKey: PieceKey;
   neighbourState: PieceState;
 }): PieceState {
-  const unrotatedVector = getPieceVectorRequiredForJoining(
-    neighbourKey,
-    heldPieceKey,
-  );
+  const unrotatedVector = getSolutionPieceVector(neighbourKey, heldPieceKey);
   const rotatedVector = rotateVector(unrotatedVector, neighbourState.rotation);
   return {
     ...neighbourState,
