@@ -20,7 +20,7 @@ type Props = {
   pieceState: PieceState;
   jigsawConfig: JigsawConfig;
   isDragging: boolean;
-  onMouseDown: MouseEventHandler<HTMLElement>;
+  onMouseDown: MouseEventHandler<SVGPathElement>;
 };
 
 export default function Piece({
@@ -49,10 +49,37 @@ export default function Piece({
     height: pieceHeight,
   };
 
+  if (pieceKey === '0,0') {
+    return (
+      <svg
+        style={{
+          pointerEvents: 'none',
+          position: 'absolute',
+          top: top - pieceHeight / 2,
+          left: left - pieceWidth / 2,
+          width: pieceWidth * 2, // TODO - const for 2
+          height: pieceHeight * 2, // TODO - const for 2
+          transform: `rotate(${rotation}deg)`,
+          border: '1px solid red',
+        }}
+        viewBox="0 0 100 100"
+      >
+        <path
+          d="M25,25 L75,25 L75,75 L25,75 L25,25"
+          style={{
+            fill: 'blue',
+            cursor: isDragging ? 'grabbing' : 'grab',
+            pointerEvents: 'auto',
+          }}
+          onMouseDown={onMouseDown}
+        />
+      </svg>
+    );
+  }
+
   return (
     <PieceDiv
-      onMouseDown={onMouseDown}
-      key={pieceKey}
+      onMouseDown={onMouseDown as MouseEventHandler}
       isDragging={isDragging}
       style={{
         ...sharedStyles,
