@@ -1,14 +1,13 @@
 import styled from 'styled-components';
-import { JigsawConfig, PieceKey, PieceState } from '../types';
+import { JigsawConfig, PieceKey } from '../types';
 import {
   getPieceFromKey,
   getPieceHeight,
-  getSolutionPieceVector,
   getPieceWidth,
 } from '../utils/pieces';
-import { MouseEventHandler } from 'react';
+import { CSSProperties } from 'react';
+import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 
-const PIECE_BOUNDING_BOX_SIZE_FACTOR = 2; // bounding box is X times bigger than actual piece
 const ONE_HUNDRED = 100; // percentages used for svg viewbox
 
 const VIEWBOX_PIECE_SIZE = ONE_HUNDRED / PIECE_BOUNDING_BOX_SIZE_FACTOR;
@@ -25,18 +24,16 @@ const PieceSvg = styled.svg<{ pieceWidth: number; pieceHeight: number }>`
 
 type Props = {
   pieceKey: PieceKey;
-  pieceState: PieceState;
   jigsawConfig: JigsawConfig;
   isDragging: boolean;
-  onMouseDown: MouseEventHandler<SVGPathElement>;
+  style?: CSSProperties;
 };
 
 export default function Piece({
   pieceKey,
-  pieceState,
   jigsawConfig,
   isDragging,
-  onMouseDown,
+  style,
 }: Props) {
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
@@ -49,15 +46,10 @@ export default function Piece({
     jigsawConfig.rows,
   );
 
-  const { top, left, rotation, childPieces } = pieceState;
-
-  console.log(
-    '🚀 ~ file: Piece.tsx:49 ~ childPieces:',
-    childPieces,
-    getSolutionPieceVector,
-  );
-
-  console.log(pieceWidth, pieceHeight);
+  // TODO - child pieces a little tricky
+  //   A - render all as children? Maybe simpler but less performant.
+  //   B - render as one SVG? Bounding box would either need to be full puzzle or dynamically sized. Yuck
+  //   C - nested SVGs??
 
   return (
     <PieceSvg
@@ -65,12 +57,7 @@ export default function Piece({
       pieceHeight={pieceHeight}
       viewBox={`0 0 ${ONE_HUNDRED} ${ONE_HUNDRED}`}
       preserveAspectRatio="none"
-      style={{
-        // top/left relate to center of piece
-        top: top - pieceHeight / 2,
-        left: left - pieceWidth / 2,
-        transform: `rotate(${rotation}deg)`,
-      }}
+      style={style}
     >
       <defs>
         <pattern
@@ -96,7 +83,6 @@ export default function Piece({
           cursor: isDragging ? 'grabbing' : 'grab',
           pointerEvents: 'auto',
         }}
-        onMouseDown={onMouseDown}
       />
     </PieceSvg>
   );
