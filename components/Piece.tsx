@@ -8,11 +8,19 @@ import {
 } from '../utils/pieces';
 import { MouseEventHandler } from 'react';
 
-const PieceDiv = styled.div<{ isDragging?: boolean }>`
-  outline: 2px solid green;
-  background-image: url('/images/test-image-1.jpg');
+const PIECE_BOUNDING_BOX_SIZE_FACTOR = 2; // bounding box is X times bigger than actual piece
+const ONE_HUNDRED = 100; // percentages used for svg viewbox
+
+const VIEWBOX_PIECE_SIZE = ONE_HUNDRED / PIECE_BOUNDING_BOX_SIZE_FACTOR;
+const BOUNDING_BOX_PADDING = (ONE_HUNDRED - VIEWBOX_PIECE_SIZE) / 2;
+
+const PieceSvg = styled.svg<{ pieceWidth: number; pieceHeight: number }>`
+  pointer-events: none;
   position: absolute;
-  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+  outline: 1px solid red;
+  width: ${({ pieceWidth }) => pieceWidth * PIECE_BOUNDING_BOX_SIZE_FACTOR}px;
+  height: ${({ pieceHeight }) =>
+    pieceHeight * PIECE_BOUNDING_BOX_SIZE_FACTOR}px;
 `;
 
 type Props = {
@@ -43,71 +51,53 @@ export default function Piece({
 
   const { top, left, rotation, childPieces } = pieceState;
 
-  const sharedStyles = {
-    backgroundSize: `${jigsawConfig.jigsawWidth}px ${jigsawConfig.jigsawHeight}px`,
-    width: pieceWidth,
-    height: pieceHeight,
-  };
+  console.log(
+    '🚀 ~ file: Piece.tsx:49 ~ childPieces:',
+    childPieces,
+    getSolutionPieceVector,
+  );
 
-  if (pieceKey === '0,0') {
-    return (
-      <svg
-        style={{
-          pointerEvents: 'none',
-          position: 'absolute',
-          top: top - pieceHeight / 2,
-          left: left - pieceWidth / 2,
-          width: pieceWidth * 2, // TODO - const for 2
-          height: pieceHeight * 2, // TODO - const for 2
-          transform: `rotate(${rotation}deg)`,
-          border: '1px solid red',
-        }}
-        viewBox="0 0 100 100"
-      >
-        <path
-          d="M25,25 L75,25 L75,75 L25,75 L25,25"
-          style={{
-            fill: 'blue',
-            cursor: isDragging ? 'grabbing' : 'grab',
-            pointerEvents: 'auto',
-          }}
-          onMouseDown={onMouseDown}
-        />
-      </svg>
-    );
-  }
+  console.log(pieceWidth, pieceHeight);
 
   return (
-    <PieceDiv
-      onMouseDown={onMouseDown as MouseEventHandler}
-      isDragging={isDragging}
+    <PieceSvg
+      pieceWidth={pieceWidth}
+      pieceHeight={pieceHeight}
+      viewBox={`0 0 ${ONE_HUNDRED} ${ONE_HUNDRED}`}
+      preserveAspectRatio="none"
       style={{
-        ...sharedStyles,
-        backgroundPositionX: -(pieceWidth * colIndex),
-        backgroundPositionY: -(pieceHeight * rowIndex),
-        top,
-        left,
+        // top/left relate to center of piece
+        top: top - pieceHeight / 2,
+        left: left - pieceWidth / 2,
         transform: `rotate(${rotation}deg)`,
       }}
     >
-      {childPieces &&
-        Object.keys(childPieces).map((childKey) => {
-          const { colIndex: childColIndex, rowIndex: childRowIndex } =
-            getPieceFromKey(childKey);
-          const childVector = getSolutionPieceVector(pieceKey, childKey);
-          return (
-            <PieceDiv
-              key={childKey}
-              style={{
-                ...sharedStyles,
-                backgroundPositionX: -(pieceWidth * childColIndex),
-                backgroundPositionY: -(pieceHeight * childRowIndex),
-                left: childVector[0],
-                top: childVector[1],
-              }}
-            />
-          );
-        })}
-    </PieceDiv>
+      <defs>
+        <pattern
+          id={pieceKey}
+          patternUnits="userSpaceOnUse"
+          width={ONE_HUNDRED}
+          height={ONE_HUNDRED}
+        >
+          <image
+            href="/images/test-image-1.jpg"
+            x={BOUNDING_BOX_PADDING - VIEWBOX_PIECE_SIZE * colIndex}
+            y={BOUNDING_BOX_PADDING - VIEWBOX_PIECE_SIZE * rowIndex}
+            width={VIEWBOX_PIECE_SIZE * jigsawConfig.columns}
+            height={VIEWBOX_PIECE_SIZE * jigsawConfig.rows}
+            preserveAspectRatio="none"
+          />
+        </pattern>
+      </defs>
+      <path
+        d="M25,25 L75,25 L75,75 L25,75 L25,25"
+        fill={`url(#${pieceKey})`}
+        style={{
+          cursor: isDragging ? 'grabbing' : 'grab',
+          pointerEvents: 'auto',
+        }}
+        onMouseDown={onMouseDown}
+      />
+    </PieceSvg>
   );
 }
