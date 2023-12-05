@@ -10,9 +10,10 @@ import {
 import useGame from '../hooks/useGame';
 import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
+import { COLORS } from '../constants/colors';
 
 const CanvasWrapper = styled.div`
-  outline: 7px solid #0099ff;
+  outline: 7px solid ${COLORS.ELECTRIC_BLUE};
   height: ${CANVAS_HEIGHT}px;
   width: ${CANVAS_WIDTH}px;
   position: relative;
