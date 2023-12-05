@@ -1,7 +1,8 @@
 import { MouseEvent } from 'react';
 
+// TODO can we replace this with pos within canvas? Might be simpler
 export function getMousePosWithinElement(
-  e: MouseEvent<HTMLElement>,
+  e: MouseEvent<HTMLDivElement>,
   el: HTMLElement,
 ) {
   const canvasRect = el.getBoundingClientRect();

@@ -103,7 +103,7 @@ export default function usePieceUpdates({
   }, [rotatingDirection, draggingPieceKey, gameKey]);
 
   const onDrag = useCallback(
-    (e: MouseEvent<HTMLElement>) => {
+    (e: MouseEvent<HTMLDivElement>) => {
       if (!dragPieceInfo || !canvasRef.current) {
         return;
       }
@@ -129,7 +129,7 @@ export default function usePieceUpdates({
 
   const onMouseDown = useCallback(
     (
-      e: MouseEvent<HTMLElement>,
+      e: MouseEvent<HTMLDivElement>,
       pieceKey: PieceKey,
       pieceState: PieceState,
     ) => {

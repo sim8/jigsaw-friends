@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Piece from './Piece';
+import CompositePiece from './CompositePiece';
 import { useRef } from 'react';
 import { keyboardShortcuts } from '../constants/keyboardShortcuts';
 import {
@@ -72,7 +72,7 @@ export default function JigsawCanvas() {
     >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
-          <Piece
+          <CompositePiece
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
