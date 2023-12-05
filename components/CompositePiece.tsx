@@ -1,6 +1,6 @@
 import { JigsawConfig, PieceKey, PieceState } from '../types';
 import { MouseEventHandler } from 'react';
-import Piece from './Piece';
+import PieceSvg from './PieceSvg';
 import {
   getPieceHeight,
   getPieceWidth,
@@ -59,7 +59,7 @@ export default function CompositePiece({
         transform: `rotate(${rotation}deg)`,
       }}
     >
-      <Piece
+      <PieceSvg
         pieceKey={pieceKey}
         jigsawConfig={jigsawConfig}
         isDragging={isDragging}
@@ -72,7 +72,7 @@ export default function CompositePiece({
         Object.keys(childPieces).map((childKey) => {
           const childVector = getSolutionPieceVector(pieceKey, childKey);
           return (
-            <Piece
+            <PieceSvg
               key={childKey}
               pieceKey={childKey}
               jigsawConfig={jigsawConfig}
