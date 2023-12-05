@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { COLORS } from '../constants/colors';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -14,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
   a {
     color: inherit;
     text-decoration: none;
-    color: #0099ff;
+    color: ${COLORS.ELECTRIC_BLUE};
   }
 
   * {

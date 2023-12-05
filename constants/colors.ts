@@ -11,6 +11,7 @@ export const COLORS = {
 
   // app
   GRAY: '#CFCFCF',
+  ELECTRIC_BLUE: '#0099ff',
 } as const;
 
 export const COLOR_OPTIONS = [
