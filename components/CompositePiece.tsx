@@ -8,6 +8,8 @@ import {
 } from '../utils/pieces';
 import styled from 'styled-components';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
+import { COLORS } from '../constants/colors';
+import useDebug from '../hooks/useDebug';
 
 type Props = {
   pieceKey: PieceKey;
@@ -22,6 +24,17 @@ const CompositePieceWrapper = styled.div`
   pointer-events: none;
 `;
 
+const PIECE_CENTER_DEBUG_SIZE = 20;
+
+const PieceCenterDebug = styled.div`
+  position: absolute;
+  width: ${PIECE_CENTER_DEBUG_SIZE}px;
+  height: ${PIECE_CENTER_DEBUG_SIZE}px;
+  border-radius: ${PIECE_CENTER_DEBUG_SIZE / 2}px;
+  z-index: 1;
+  background-color: ${COLORS.ELECTRIC_BLUE};
+`;
+
 export default function CompositePiece({
   pieceKey,
   pieceState,
@@ -29,6 +42,8 @@ export default function CompositePiece({
   isDragging,
   onMouseDown,
 }: Props) {
+  const { debugEnabled } = useDebug();
+
   const pieceWidth = getPieceWidth(
     jigsawConfig.jigsawWidth,
     jigsawConfig.columns,
@@ -84,6 +99,15 @@ export default function CompositePiece({
             />
           );
         })}
+
+      {debugEnabled && (
+        <PieceCenterDebug
+          style={{
+            left: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
+            top: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
+          }}
+        />
+      )}
     </CompositePieceWrapper>
   );
 }
