@@ -7,19 +7,28 @@ import {
 } from '../utils/pieces';
 import { CSSProperties } from 'react';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
+import useDebug from '../hooks/useDebug';
 
 const ONE_HUNDRED = 100; // percentages used for svg viewbox
 
 const VIEWBOX_PIECE_SIZE = ONE_HUNDRED / PIECE_BOUNDING_BOX_SIZE_FACTOR;
 const BOUNDING_BOX_PADDING = (ONE_HUNDRED - VIEWBOX_PIECE_SIZE) / 2;
 
-const PieceSvg = styled.svg<{ pieceWidth: number; pieceHeight: number }>`
+const PieceSvg = styled.svg<{
+  pieceWidth: number;
+  pieceHeight: number;
+  debugEnabled: boolean;
+}>`
   pointer-events: none;
   position: absolute;
-  outline: 1px solid red;
   width: ${({ pieceWidth }) => pieceWidth * PIECE_BOUNDING_BOX_SIZE_FACTOR}px;
   height: ${({ pieceHeight }) =>
     pieceHeight * PIECE_BOUNDING_BOX_SIZE_FACTOR}px;
+  ${({ debugEnabled }) =>
+    debugEnabled &&
+    `
+  outline: 1px solid red;
+  `}
 `;
 
 type Props = {
@@ -35,6 +44,7 @@ export default function Piece({
   isDragging,
   style,
 }: Props) {
+  const { debugEnabled } = useDebug();
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
   const pieceWidth = getPieceWidth(
@@ -50,6 +60,7 @@ export default function Piece({
     <PieceSvg
       pieceWidth={pieceWidth}
       pieceHeight={pieceHeight}
+      debugEnabled={debugEnabled}
       viewBox={`0 0 ${ONE_HUNDRED} ${ONE_HUNDRED}`}
       preserveAspectRatio="none"
       style={style}
