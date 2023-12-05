@@ -40,11 +40,6 @@ export default function CompositePiece({
 
   const { top, left, rotation, childPieces } = pieceState;
 
-  // TODO - child pieces a little tricky
-  //   A - render all as children? Maybe simpler but less performant.
-  //   B - render as one SVG? Bounding box would either need to be full puzzle or dynamically sized. Yuck
-  //   C - nested SVGs??
-
   const boundingBoxWidthOffset = pieceWidth / PIECE_BOUNDING_BOX_SIZE_FACTOR;
   const boundingBoxHeightOffset = pieceHeight / PIECE_BOUNDING_BOX_SIZE_FACTOR;
 

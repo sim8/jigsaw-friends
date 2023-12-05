@@ -46,11 +46,6 @@ export default function Piece({
     jigsawConfig.rows,
   );
 
-  // TODO - child pieces a little tricky
-  //   A - render all as children? Maybe simpler but less performant.
-  //   B - render as one SVG? Bounding box would either need to be full puzzle or dynamically sized. Yuck
-  //   C - nested SVGs??
-
   return (
     <PieceSvg
       pieceWidth={pieceWidth}
