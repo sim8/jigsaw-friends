@@ -8,9 +8,11 @@ import Button from './styled/Button';
 import styled from 'styled-components';
 import Input from './styled/Input';
 import { COLOR_OPTIONS } from '../constants/colors';
+import JigsawSettings from './JigsawSettings';
 
 const LobbyContents = styled.div`
   display: flex;
+  margin-bottom: 30px;
 `;
 
 const PlayerCardList = styled.ol`
@@ -74,12 +76,13 @@ export default function Lobby() {
           </PlayerCardList>
           <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
         </div>
+        <JigsawSettings />
       </LobbyContents>
       <Button
         onClick={() => startGame({ gameKey })}
         disabled={user ? user.uid !== host : true}
         size="large"
-        style={{ display: 'block', textAlign: 'center' }}
+        style={{ display: 'block', margin: '0 auto' }}
       >
         Start
       </Button>
