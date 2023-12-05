@@ -59,3 +59,10 @@ export type Game = {
 export type GameWithKey = Game & { gameKey: GameKey };
 
 export type Vector = [number, number];
+
+export type JigsawImage = {
+  creditHtml: string;
+  filename: string;
+};
+
+export type ColumnsRows = [number, number];
