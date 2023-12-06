@@ -9,6 +9,7 @@ type Props = {
 const FormControlWrapper = styled.div`
   label {
     display: block;
+    font-size: 24px;
   }
 `;
 

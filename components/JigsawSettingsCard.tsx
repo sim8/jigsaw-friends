@@ -8,6 +8,7 @@ import FormControl from './FormControl';
 const JigsawSettingsWrapper = styled.div`
   border: 3px solid black;
   border-radius: 10px;
+  padding: 15px;
 `;
 
 const ImagePreview = styled.img`
@@ -27,7 +28,7 @@ export default function JigsawSettingsCard({
 }: Props) {
   return (
     <JigsawSettingsWrapper>
-      <h2>Settings</h2>
+      <h2 style={{ marginTop: 0 }}>Settings</h2>
       <FormControl title="Jigsaw">
         <ImagePreview src={jigsawSettings.url} />
       </FormControl>

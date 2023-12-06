@@ -17,6 +17,7 @@ import { JIGSAW_IMAGES } from '../constants/jigsawImages';
 const LobbyContents = styled.div`
   display: flex;
   margin-bottom: 30px;
+  gap: 20px;
 `;
 
 const PlayerCardList = styled.ol`
