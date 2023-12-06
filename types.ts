@@ -66,3 +66,8 @@ export type JigsawImage = {
 };
 
 export type ColumnsRows = [number, number];
+
+export type JigsawSettings = {
+  columnsRowsKey: string;
+  url: string;
+};
