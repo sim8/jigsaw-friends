@@ -16,13 +16,13 @@ import { JIGSAW_IMAGES } from '../constants/jigsawImages';
 
 const LobbyContents = styled.div`
   display: flex;
-  margin-bottom: 30px;
+  margin: 40px 0;
   gap: 20px;
 `;
 
 const PlayerCardList = styled.ol`
   margin: 0;
-  padding: 0;
+  padding: 30px 0 0;
   width: 400px;
 `;
 
@@ -37,6 +37,9 @@ const PlayerCardWrapper = styled.div`
 export default function Lobby() {
   const { gameKey, liveUsers, host } = useGame();
   const { user } = useUser();
+
+  // TODO - this should live on DB straight away
+  // ensure only host can change
   const [jigsawSettings, setJigsawSettings] = useState<JigsawSettings>({
     columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
     url: getImagePath(

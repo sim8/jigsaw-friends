@@ -4,17 +4,30 @@ import { getKeyFromColumnsRows } from '../utils/settings';
 import { JigsawSettings } from '../types';
 import { Dispatch, SetStateAction } from 'react';
 import FormControl from './FormControl';
+import Image from 'next/image';
+import { StyledButton } from './styled/Button';
 
-const JigsawSettingsWrapper = styled.div`
-  border: 3px solid black;
-  border-radius: 10px;
-  padding: 15px;
-`;
+const JigsawSettingsWrapper = styled.div``;
 
-const ImagePreview = styled.img`
+const ImagePreview = styled.div`
   border: 3px solid black;
   border-radius: 10px;
   width: 300px;
+  position: relative;
+  box-sizing: content-box;
+  overflow: hidden;
+  font-size: 0;
+`;
+
+const ImagePreviewButton = styled(StyledButton)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
 `;
 
 type Props = {
@@ -28,9 +41,17 @@ export default function JigsawSettingsCard({
 }: Props) {
   return (
     <JigsawSettingsWrapper>
-      <h2 style={{ marginTop: 0 }}>Settings</h2>
+      {/* <h2 style={{ marginTop: 0 }}>Settings</h2> */}
       <FormControl title="Jigsaw">
-        <ImagePreview src={jigsawSettings.url} />
+        <ImagePreview>
+          <Image
+            src={jigsawSettings.url}
+            alt="Jigsaw preview"
+            width={300}
+            height={185}
+          />
+          <ImagePreviewButton size="small">Change</ImagePreviewButton>
+        </ImagePreview>
       </FormControl>
       <FormControl title="Pieces" formName="pieces">
         <select

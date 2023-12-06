@@ -2,6 +2,7 @@ import GameContextProviderWithLoadingState from '../contexts/GameContextProvider
 import { useRouter } from 'next/router';
 import RequiresAuth from './RequiresAuth';
 import LobbyOrGame from './LobbyOrGame';
+import ErrorBoundary from './ErrorBoundary';
 import DebugContextProvider from '../contexts/DebugContextProvider';
 
 export default function GameContainer() {
@@ -15,14 +16,16 @@ export default function GameContainer() {
   }
   return (
     <RequiresAuth>
-      <DebugContextProvider>
-        <GameContextProviderWithLoadingState
-          gameKey={gameKey}
-          loadingState={<>{'Loading...'}</>}
-        >
-          <LobbyOrGame />
-        </GameContextProviderWithLoadingState>
-      </DebugContextProvider>
+      <ErrorBoundary>
+        <DebugContextProvider>
+          <GameContextProviderWithLoadingState
+            gameKey={gameKey}
+            loadingState={<>{'Loading...'}</>}
+          >
+            <LobbyOrGame />
+          </GameContextProviderWithLoadingState>
+        </DebugContextProvider>
+      </ErrorBoundary>
     </RequiresAuth>
   );
 }
