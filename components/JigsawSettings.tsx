@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { getKeyFromColumnsRows } from '../utils/settings';
-import { JigsawSettings } from '../types';
+import { JigsawSettings as JigsawSettingsType } from '../types';
 import { Dispatch, SetStateAction, useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
@@ -32,11 +32,11 @@ const ImagePreviewButton = styled(StyledButton)`
 `;
 
 type Props = {
-  jigsawSettings: JigsawSettings;
-  setJigsawSettings: Dispatch<SetStateAction<JigsawSettings>>;
+  jigsawSettings: JigsawSettingsType;
+  setJigsawSettings: Dispatch<SetStateAction<JigsawSettingsType>>;
 };
 
-export default function JigsawSettingsCard({
+export default function JigsawSettings({
   jigsawSettings,
   setJigsawSettings,
 }: Props) {
