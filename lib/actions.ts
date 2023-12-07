@@ -11,10 +11,20 @@ import {
   serverTimestamp,
 } from 'firebase/database';
 import { getFirebase } from '../firebase/clientApp';
-import { Game, GameKey, PieceKey, PieceState, Uid } from '../types';
+import {
+  Game,
+  GameKey,
+  JigsawSettings,
+  PieceKey,
+  PieceState,
+  Uid,
+} from '../types';
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
+import { getKeyFromColumnsRows } from '../utils/settings';
+import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
+import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 
 const createGame = (userCredential: UserCredential): GameKey | null => {
   const { database } = getFirebase();
@@ -28,6 +38,14 @@ const createGame = (userCredential: UserCredential): GameKey | null => {
         // TODO not sure if we can do better typing here
         joinedAt: serverTimestamp() as unknown as number,
       },
+    },
+    settings: {
+      // default to smallest number of pieces
+      columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
+      // random built in puzzle
+      url: BUILT_IN_JIGSAW_IMAGES[
+        Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
+      ].filename,
     },
   };
 
@@ -59,6 +77,31 @@ export function startGame({ gameKey }: { gameKey: GameKey }) {
     [`games/${gameKey}/startedAt`]: serverTimestamp(),
     [`games/${gameKey}/jigsaw`]: generateJigsawState(JIGSAW_CONFIG),
   });
+}
+
+export function setJigsawUrl({
+  gameKey,
+  url,
+}: {
+  gameKey: GameKey;
+  url: JigsawSettings['url'];
+}) {
+  const { database } = getFirebase();
+  set(ref(database, `games/${gameKey}/settings/url`), url);
+}
+
+export function setJigsawColumnsRows({
+  gameKey,
+  columnsRowsKey,
+}: {
+  gameKey: GameKey;
+  columnsRowsKey: JigsawSettings['columnsRowsKey'];
+}) {
+  const { database } = getFirebase();
+  set(
+    ref(database, `games/${gameKey}/settings/columnsRowsKey`),
+    columnsRowsKey,
+  );
 }
 
 export function joinGame({ gameKey, uid }: { gameKey: GameKey; uid: string }) {

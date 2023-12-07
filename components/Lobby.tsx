@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
 import { getGameLink } from '../utils/urls';
@@ -9,10 +9,6 @@ import styled from 'styled-components';
 import Input from './styled/Input';
 import { COLOR_OPTIONS } from '../constants/colors';
 import JigsawSettings from './JigsawSettings';
-import { JigsawSettings as JigsawSettingsType } from '../types';
-import { getKeyFromColumnsRows } from '../utils/settings';
-import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
-import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 
 const LobbyContents = styled.div`
   display: flex;
@@ -37,15 +33,6 @@ const PlayerCardWrapper = styled.div`
 export default function Lobby() {
   const { gameKey, liveUsers, host } = useGame();
   const { user } = useUser();
-
-  // TODO - this should live on DB straight away
-  // ensure only host can change
-  const [jigsawSettings, setJigsawSettings] = useState<JigsawSettingsType>({
-    columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
-    url: BUILT_IN_JIGSAW_IMAGES[
-      Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
-    ].filename,
-  });
 
   const orderedLiveUserIds = useMemo(
     () =>
@@ -90,10 +77,7 @@ export default function Lobby() {
           </PlayerCardList>
           <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
         </div>
-        <JigsawSettings
-          jigsawSettings={jigsawSettings}
-          setJigsawSettings={setJigsawSettings}
-        />
+        <JigsawSettings />
       </LobbyContents>
       <Button
         onClick={() => startGame({ gameKey })}

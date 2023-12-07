@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { getKeyFromColumnsRows } from '../utils/settings';
-import { JigsawSettings as JigsawSettingsType } from '../types';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
 import { StyledButton } from './styled/Button';
 import JigsawImageSelectionModal from './JigsawImageSelectionModal';
 import { getBuiltInImagePath } from '../utils/urls';
+import { setJigsawColumnsRows, setJigsawUrl } from '../lib/actions';
+import useGame from '../hooks/useGame';
 
 const JigsawSettingsWrapper = styled.div``;
 
@@ -32,23 +33,19 @@ const ImagePreviewButton = styled(StyledButton)`
   border-bottom-left-radius: 0;
 `;
 
-type Props = {
-  jigsawSettings: JigsawSettingsType;
-  setJigsawSettings: Dispatch<SetStateAction<JigsawSettingsType>>;
-};
-
-export default function JigsawSettings({
-  jigsawSettings,
-  setJigsawSettings,
-}: Props) {
+export default function JigsawSettings() {
   const [modalOpen, setModalOpen] = useState(false);
+  const {
+    gameKey,
+    settings: { url, columnsRowsKey },
+  } = useGame();
   return (
     <JigsawSettingsWrapper>
       {/* <h2 style={{ marginTop: 0 }}>Settings</h2> */}
       <FormControl title="Jigsaw">
         <ImagePreview>
           <Image
-            src={getBuiltInImagePath(jigsawSettings.url)}
+            src={getBuiltInImagePath(url)}
             alt="Jigsaw preview"
             width={300}
             height={185}
@@ -61,13 +58,10 @@ export default function JigsawSettings({
       <FormControl title="Pieces" formName="pieces">
         <select
           name="pieces"
-          value={jigsawSettings.columnsRowsKey}
-          onChange={(e) =>
-            setJigsawSettings((prev) => ({
-              ...prev,
-              columnsRowsKey: e.target.value,
-            }))
-          }
+          value={columnsRowsKey}
+          onChange={(e) => {
+            setJigsawColumnsRows({ gameKey, columnsRowsKey: e.target.value });
+          }}
         >
           {NUMBER_OF_PIECES_OPTIONS.map((columnsRows) => {
             const key = getKeyFromColumnsRows(columnsRows);
@@ -83,9 +77,9 @@ export default function JigsawSettings({
       {modalOpen && (
         <JigsawImageSelectionModal
           onClose={() => setModalOpen(false)}
-          prevUrl={jigsawSettings.url}
-          onSelect={(url) => {
-            setJigsawSettings((prev) => ({ ...prev, url }));
+          prevUrl={url}
+          onSelect={(newUrl) => {
+            setJigsawUrl({ gameKey, url: newUrl });
           }}
         />
       )}
