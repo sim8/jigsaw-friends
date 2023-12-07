@@ -6,6 +6,7 @@ import { getBuiltInImagePath } from '../utils/urls';
 import Button from './styled/Button';
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
+import { COLORS } from '../constants/colors';
 
 type Props = Omit<ModalProps, 'children'> & {
   onSelect: (url: JigsawSettings['url']) => void;
@@ -25,6 +26,7 @@ const GridAndPreview = styled.div`
   display: flex;
   flex-grow: 1;
   overflow-y: scroll;
+  margin: 0 20px;
 `;
 
 const ImagePreview = styled.div`
@@ -53,10 +55,17 @@ const Header = styled.div`
   padding: 10px 0;
 `;
 
-const ImageGridItem = styled.div`
+const ImageGridItem = styled.div<{ selected: boolean }>`
   width: 230px;
   height: 140px;
   position: relative;
+
+  border: 3px solid
+    ${({ selected }) => (selected ? COLORS.ELECTRIC_BLUE : 'black')};
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 10px;
+  margin: 0 20px 20px;
 `;
 
 export default function JigsawImageSelectionModal({
@@ -86,6 +95,7 @@ export default function JigsawImageSelectionModal({
           <ImageGrid>
             {BUILT_IN_JIGSAW_IMAGES.map(({ filename }) => (
               <ImageGridItem
+                selected={filename === selectedImage}
                 key={filename}
                 onClick={() => setSelectedImage(filename)}
               >
