@@ -26,7 +26,7 @@ const getPadding = (props: Props) => {
   }
 };
 
-export const StyledButton = styled.button`
+export const UnstyledButton = styled.button`
   // resets
   background: none;
   color: inherit;
@@ -35,7 +35,9 @@ export const StyledButton = styled.button`
   font: inherit;
   cursor: pointer;
   outline: inherit;
+`;
 
+export const StyledButton = styled(UnstyledButton)`
   font-family: ${pangolin.style.fontFamily};
   border: 4px solid ${(props) => (props.disabled ? COLORS.GRAY : 'black')};
   border-radius: 6px;

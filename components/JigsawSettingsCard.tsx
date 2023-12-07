@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { getKeyFromColumnsRows } from '../utils/settings';
 import { JigsawSettings } from '../types';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
 import { StyledButton } from './styled/Button';
+import JigsawImageSelectionModal from './JigsawImageSelectionModal';
 
 const JigsawSettingsWrapper = styled.div``;
 
@@ -39,6 +40,7 @@ export default function JigsawSettingsCard({
   jigsawSettings,
   setJigsawSettings,
 }: Props) {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <JigsawSettingsWrapper>
       {/* <h2 style={{ marginTop: 0 }}>Settings</h2> */}
@@ -50,7 +52,9 @@ export default function JigsawSettingsCard({
             width={300}
             height={185}
           />
-          <ImagePreviewButton size="small">Change</ImagePreviewButton>
+          <ImagePreviewButton size="small" onClick={() => setModalOpen(true)}>
+            Change
+          </ImagePreviewButton>
         </ImagePreview>
       </FormControl>
       <FormControl title="Pieces" formName="pieces">
@@ -75,6 +79,14 @@ export default function JigsawSettingsCard({
           })}
         </select>
       </FormControl>
+      {modalOpen && (
+        <JigsawImageSelectionModal
+          onClose={() => setModalOpen(false)}
+          onSelect={(url) => {
+            console.log(url);
+          }}
+        />
+      )}
     </JigsawSettingsWrapper>
   );
 }
