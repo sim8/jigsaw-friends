@@ -1,6 +1,6 @@
-import { JigsawImage } from '../types';
+import { BuiltInJigsawImage } from '../types';
 
-export const JIGSAW_IMAGES: readonly JigsawImage[] = [
+export const BUILT_IN_JIGSAW_IMAGES: readonly BuiltInJigsawImage[] = [
   {
     filename: 'patrick-robert-doyle-eb8dmXNOGP4-unsplash.jpg',
     creditHtml: `Photo by <a href="https://unsplash.com/@teapowered?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Patrick Robert Doyle</a> on <a href="https://unsplash.com/photos/brown-wooden-houses-near-green-trees-and-mountain-under-white-clouds-during-daytime-eb8dmXNOGP4?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>`,

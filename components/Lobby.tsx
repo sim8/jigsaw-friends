@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
-import { getGameLink, getImagePath } from '../utils/urls';
+import { getGameLink, getBuiltInImagePath } from '../utils/urls';
 import useUser from '../hooks/useUser';
 import { Title } from './sharedstyles';
 import Button from './styled/Button';
@@ -12,7 +12,7 @@ import JigsawSettings from './JigsawSettings';
 import { JigsawSettings as JigsawSettingsType } from '../types';
 import { getKeyFromColumnsRows } from '../utils/settings';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
-import { JIGSAW_IMAGES } from '../constants/jigsawImages';
+import { BUILT_IN_JIGSAW_IMAGES } from '../constants/jigsawImages';
 
 const LobbyContents = styled.div`
   display: flex;
@@ -42,8 +42,10 @@ export default function Lobby() {
   // ensure only host can change
   const [jigsawSettings, setJigsawSettings] = useState<JigsawSettingsType>({
     columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
-    url: getImagePath(
-      JIGSAW_IMAGES[Math.floor(Math.random() * JIGSAW_IMAGES.length)].filename,
+    url: getBuiltInImagePath(
+      BUILT_IN_JIGSAW_IMAGES[
+        Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
+      ].filename,
     ),
   });
 
