@@ -10,6 +10,7 @@ type Props = {
 const ModalWrapper = styled.div`
   border: 4px solid black;
   width: calc(100% - 100px);
+  aspect-ratio: 1.618 / 1;
   position: relative;
   background-color: white;
 `;
