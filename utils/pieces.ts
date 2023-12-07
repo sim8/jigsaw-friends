@@ -22,15 +22,29 @@ export function getPieceHeight(jigsawHeight: number, rows: number) {
   return jigsawHeight / rows;
 }
 
-function arePieceCoordinatesValid(piece: Piece) {
-  const columnValid =
-    piece.colIndex >= 0 && piece.colIndex <= JIGSAW_CONFIG.columns - 1;
-  const rowValid =
-    piece.rowIndex >= 0 && piece.rowIndex <= JIGSAW_CONFIG.rows - 1;
+function arePieceCoordinatesValid({
+  piece,
+  rows,
+  columns,
+}: {
+  piece: Piece;
+  rows: number;
+  columns: number;
+}) {
+  const columnValid = piece.colIndex >= 0 && piece.colIndex <= columns - 1;
+  const rowValid = piece.rowIndex >= 0 && piece.rowIndex <= rows - 1;
   return columnValid && rowValid;
 }
 
-export function getSolutionNeighbourKeys(pieceKey: PieceKey) {
+export function getSolutionNeighbourKeys({
+  pieceKey,
+  columns,
+  rows,
+}: {
+  pieceKey: PieceKey;
+  columns: number;
+  rows: number;
+}) {
   const piece = getPieceFromKey(pieceKey);
 
   const potentialPieces: Piece[] = [
@@ -52,20 +66,31 @@ export function getSolutionNeighbourKeys(pieceKey: PieceKey) {
     },
   ];
 
-  return potentialPieces.filter(arePieceCoordinatesValid).map(getPieceKey);
+  return potentialPieces
+    .filter((potentialPiece) =>
+      arePieceCoordinatesValid({ piece: potentialPiece, rows, columns }),
+    )
+    .map(getPieceKey);
 }
 
-export function getSolutionPieceVector(
-  pieceAKey: PieceKey,
-  pieceBKey: PieceKey,
-): Vector {
+export function getSolutionPieceVector({
+  pieceAKey,
+  pieceBKey,
+  rows,
+  columns,
+}: {
+  pieceAKey: PieceKey;
+  pieceBKey: PieceKey;
+  rows: number;
+  columns: number;
+}): Vector {
   const pieceA = getPieceFromKey(pieceAKey);
   const pieceB = getPieceFromKey(pieceBKey);
   return [
     (pieceB.colIndex - pieceA.colIndex) *
-      getPieceWidth(JIGSAW_CONFIG.jigsawWidth, JIGSAW_CONFIG.columns),
+      getPieceWidth(JIGSAW_CONFIG.jigsawWidth, columns),
     (pieceB.rowIndex - pieceA.rowIndex) *
-      getPieceHeight(JIGSAW_CONFIG.jigsawHeight, JIGSAW_CONFIG.rows),
+      getPieceHeight(JIGSAW_CONFIG.jigsawHeight, rows),
   ];
 }
 
@@ -84,12 +109,21 @@ export function getRequiredStateToJoinNeighbour({
   heldPieceKey,
   neighbourKey,
   neighbourState,
+  rows,
+  columns,
 }: {
   heldPieceKey: PieceKey;
   neighbourKey: PieceKey;
   neighbourState: PieceState;
+  rows: number;
+  columns: number;
 }): PieceState {
-  const unrotatedVector = getSolutionPieceVector(neighbourKey, heldPieceKey);
+  const unrotatedVector = getSolutionPieceVector({
+    pieceAKey: neighbourKey,
+    pieceBKey: heldPieceKey,
+    rows,
+    columns,
+  });
   const rotatedVector = rotateVector(unrotatedVector, neighbourState.rotation);
   return {
     ...neighbourState,

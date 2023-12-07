@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import { COLORS } from '../constants/colors';
 import useDebug from '../hooks/useDebug';
+import useGame from '../hooks/useGame';
 
 type Props = {
   pieceKey: PieceKey;
@@ -43,15 +44,10 @@ export default function CompositePiece({
   onMouseDown,
 }: Props) {
   const { debugEnabled } = useDebug();
+  const { rows, columns } = useGame();
 
-  const pieceWidth = getPieceWidth(
-    jigsawConfig.jigsawWidth,
-    jigsawConfig.columns,
-  );
-  const pieceHeight = getPieceHeight(
-    jigsawConfig.jigsawHeight,
-    jigsawConfig.rows,
-  );
+  const pieceWidth = getPieceWidth(jigsawConfig.jigsawWidth, columns);
+  const pieceHeight = getPieceHeight(jigsawConfig.jigsawHeight, rows);
 
   const { top, left, rotation, childPieces } = pieceState;
 
@@ -85,7 +81,12 @@ export default function CompositePiece({
       />
       {childPieces &&
         Object.keys(childPieces).map((childKey) => {
-          const childVector = getSolutionPieceVector(pieceKey, childKey);
+          const childVector = getSolutionPieceVector({
+            pieceAKey: pieceKey,
+            pieceBKey: childKey,
+            rows,
+            columns,
+          });
           return (
             <PieceSvg
               key={childKey}

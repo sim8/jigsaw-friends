@@ -21,8 +21,6 @@ export type JigsawConfig = {
   canvasHeight: number;
   jigsawWidth: number;
   jigsawHeight: number;
-  rows: number;
-  columns: number;
 };
 
 export type DragPieceInfo = {
@@ -57,7 +55,11 @@ export type Game = {
   settings: JigsawSettings;
 };
 
-export type GameWithKey = Game & { gameKey: GameKey };
+export type GameContextType = Game & {
+  gameKey: GameKey;
+  rows: number;
+  columns: number;
+};
 
 export type Vector = [number, number];
 
