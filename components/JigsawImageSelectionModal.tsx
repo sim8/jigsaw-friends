@@ -3,7 +3,7 @@ import { JigsawSettings } from '../types';
 import Modal, { ModalProps } from './styled/Modal';
 import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 import { getBuiltInImagePath } from '../utils/urls';
-import Button from './styled/Button';
+import Button, { UnstyledButton } from './styled/Button';
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { COLORS } from '../constants/colors';
@@ -55,14 +55,14 @@ const Header = styled.div`
   padding: 10px 0;
 `;
 
-const ImageGridItem = styled.div<{ selected: boolean }>`
+const ImageGridItem = styled(UnstyledButton)<{ selected: boolean }>`
+  display: block;
   width: 230px;
   height: 140px;
   position: relative;
 
   border: 4px solid
     ${({ selected }) => (selected ? COLORS.ELECTRIC_BLUE : 'black')};
-  cursor: pointer;
   overflow: hidden;
   border-radius: 10px;
   margin: 0 20px 20px;
