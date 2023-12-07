@@ -27,7 +27,7 @@ const PlayerCardList = styled.ol`
 `;
 
 const PlayerCardWrapper = styled.div`
-  border: 3px solid black;
+  border: 4px solid black;
   border-radius: 10px;
   padding: 10px;
   background-color: ${(props) => props.color};

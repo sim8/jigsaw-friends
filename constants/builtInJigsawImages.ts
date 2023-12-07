@@ -17,4 +17,12 @@ export const BUILT_IN_JIGSAW_IMAGES: readonly BuiltInJigsawImage[] = [
     filename: 'dan-freeman-G4E6PcOt4Ps-unsplash.jpg',
     creditHtml: `Photo by <a target="_blank" href="https://unsplash.com/@danfreemanphoto?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Dan Freeman</a> on <a target="_blank" href="https://unsplash.com/photos/street-time-lapse-photography-G4E6PcOt4Ps?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>`,
   },
+  {
+    filename: 'john-towner-UO02gAW3c0c-unsplash.jpg',
+    creditHtml: `Photo by <a target="_blank" href="https://unsplash.com/@heytowner?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">JOHN TOWNER</a> on <a target="_blank" href="https://unsplash.com/photos/gray-landmark-building-UO02gAW3c0c?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>`,
+  },
+  {
+    filename: 'caleb-miller-0Bs3et8FYyg-unsplash.jpg',
+    creditHtml: `Photo by <a target="_blank" href="https://unsplash.com/@milljestic?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Caleb Miller</a> on <a target="_blank" href="https://unsplash.com/photos/aerial-photography-of-city-0Bs3et8FYyg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>`,
+  },
 ] as const;
