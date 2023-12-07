@@ -60,7 +60,7 @@ export type GameWithKey = Game & { gameKey: GameKey };
 
 export type Vector = [number, number];
 
-export type JigsawImage = {
+export type BuiltInJigsawImage = {
   creditHtml: string;
   filename: string;
 };

@@ -1,18 +1,18 @@
 import { useCallback, useMemo, useState } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
-import { getGameLink, getImagePath } from '../utils/urls';
+import { getGameLink } from '../utils/urls';
 import useUser from '../hooks/useUser';
 import { Title } from './sharedstyles';
 import Button from './styled/Button';
 import styled from 'styled-components';
 import Input from './styled/Input';
 import { COLOR_OPTIONS } from '../constants/colors';
-import JigsawSettingsCard from './JigsawSettingsCard';
-import { JigsawSettings } from '../types';
+import JigsawSettings from './JigsawSettings';
+import { JigsawSettings as JigsawSettingsType } from '../types';
 import { getKeyFromColumnsRows } from '../utils/settings';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
-import { JIGSAW_IMAGES } from '../constants/jigsawImages';
+import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 
 const LobbyContents = styled.div`
   display: flex;
@@ -40,11 +40,11 @@ export default function Lobby() {
 
   // TODO - this should live on DB straight away
   // ensure only host can change
-  const [jigsawSettings, setJigsawSettings] = useState<JigsawSettings>({
+  const [jigsawSettings, setJigsawSettings] = useState<JigsawSettingsType>({
     columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
-    url: getImagePath(
-      JIGSAW_IMAGES[Math.floor(Math.random() * JIGSAW_IMAGES.length)].filename,
-    ),
+    url: BUILT_IN_JIGSAW_IMAGES[
+      Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
+    ].filename,
   });
 
   const orderedLiveUserIds = useMemo(
@@ -90,7 +90,7 @@ export default function Lobby() {
           </PlayerCardList>
           <Button onClick={() => copyInviteLink()}>Copy invite link</Button>
         </div>
-        <JigsawSettingsCard
+        <JigsawSettings
           jigsawSettings={jigsawSettings}
           setJigsawSettings={setJigsawSettings}
         />

@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { getKeyFromColumnsRows } from '../utils/settings';
-import { JigsawSettings } from '../types';
-import { Dispatch, SetStateAction } from 'react';
+import { JigsawSettings as JigsawSettingsType } from '../types';
+import { Dispatch, SetStateAction, useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
 import { StyledButton } from './styled/Button';
+import JigsawImageSelectionModal from './JigsawImageSelectionModal';
+import { getBuiltInImagePath } from '../utils/urls';
 
 const JigsawSettingsWrapper = styled.div``;
 
@@ -31,26 +33,29 @@ const ImagePreviewButton = styled(StyledButton)`
 `;
 
 type Props = {
-  jigsawSettings: JigsawSettings;
-  setJigsawSettings: Dispatch<SetStateAction<JigsawSettings>>;
+  jigsawSettings: JigsawSettingsType;
+  setJigsawSettings: Dispatch<SetStateAction<JigsawSettingsType>>;
 };
 
-export default function JigsawSettingsCard({
+export default function JigsawSettings({
   jigsawSettings,
   setJigsawSettings,
 }: Props) {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <JigsawSettingsWrapper>
       {/* <h2 style={{ marginTop: 0 }}>Settings</h2> */}
       <FormControl title="Jigsaw">
         <ImagePreview>
           <Image
-            src={jigsawSettings.url}
+            src={getBuiltInImagePath(jigsawSettings.url)}
             alt="Jigsaw preview"
             width={300}
             height={185}
           />
-          <ImagePreviewButton size="small">Change</ImagePreviewButton>
+          <ImagePreviewButton size="small" onClick={() => setModalOpen(true)}>
+            Change
+          </ImagePreviewButton>
         </ImagePreview>
       </FormControl>
       <FormControl title="Pieces" formName="pieces">
@@ -75,6 +80,15 @@ export default function JigsawSettingsCard({
           })}
         </select>
       </FormControl>
+      {modalOpen && (
+        <JigsawImageSelectionModal
+          onClose={() => setModalOpen(false)}
+          prevUrl={jigsawSettings.url}
+          onSelect={(url) => {
+            setJigsawSettings((prev) => ({ ...prev, url }));
+          }}
+        />
+      )}
     </JigsawSettingsWrapper>
   );
 }
