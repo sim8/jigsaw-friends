@@ -28,8 +28,6 @@ const ImagePreviewAndCredit = styled.div`
   text-align: center;
 `;
 
-const ImageGrid = styled.div``;
-
 const Footer = styled.div`
   text-align: center;
   padding: 10px 0;
@@ -74,7 +72,7 @@ export default function JigsawImageSelectionModal({
         <Button>Choose</Button>
       </Header>
       <GridAndPreview>
-        <ImageGrid>
+        <div>
           {BUILT_IN_JIGSAW_IMAGES.map(({ filename }) => (
             <ImageGridItem
               key={filename}
@@ -83,7 +81,7 @@ export default function JigsawImageSelectionModal({
               <img src={getBuiltInImagePath(filename)} alt="Jigsaw preview" />
             </ImageGridItem>
           ))}
-        </ImageGrid>
+        </div>
         <ImagePreviewAndCredit>
           <ImagePreview>
             <img
