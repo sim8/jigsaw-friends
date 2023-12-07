@@ -3,19 +3,30 @@ import { pangolin } from '../../utils/fonts';
 import { COLORS } from '../../constants/colors';
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  size?: 'large' | 'medium';
+  size?: 'large' | 'medium' | 'small';
 };
 
 const getFontSize = (props: Props) => {
   switch (props.size) {
     case 'large':
       return '64px';
+    case 'small':
+      return '16px';
     default: // medium
       return '24px';
   }
 };
 
-const StyledButton = styled.button`
+const getPadding = (props: Props) => {
+  switch (props.size) {
+    case 'small':
+      return '7px 14px';
+    default: // medium
+      return '10px 20px';
+  }
+};
+
+export const StyledButton = styled.button`
   // resets
   background: none;
   color: inherit;
@@ -28,7 +39,7 @@ const StyledButton = styled.button`
   font-family: ${pangolin.style.fontFamily};
   border: 4px solid ${(props) => (props.disabled ? COLORS.GRAY : 'black')};
   border-radius: 6px;
-  padding: 10px 20px;
+  padding: ${getPadding};
 
   font-size: ${getFontSize};
 
