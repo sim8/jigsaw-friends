@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
 import { getGameLink } from '../utils/urls';

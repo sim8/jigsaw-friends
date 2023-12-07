@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { getKeyFromColumnsRows } from '../utils/settings';
-import { JigsawSettings as JigsawSettingsType } from '../types';
 import { useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
