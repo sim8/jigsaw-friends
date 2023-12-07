@@ -10,6 +10,7 @@ type Props = {
 const ModalWrapper = styled.div`
   border: 4px solid black;
   width: calc(100% - 100px);
+  max-height: calc(100% - 100px);
   aspect-ratio: 1.618 / 1;
   position: relative;
   background-color: white;
@@ -33,13 +34,15 @@ const CloseButton = styled(UnstyledButton)`
   right: 0;
   top: 0;
   padding: 15px;
+  font-size: 36px;
+  line-height: 22px;
 `;
 
 export default function Modal({ children, onClose }: Props) {
   return (
     <ScreenCover>
       <ModalWrapper>
-        <CloseButton onClick={onClose}>X</CloseButton>
+        <CloseButton onClick={onClose}>x</CloseButton>
         {children}
       </ModalWrapper>
     </ScreenCover>

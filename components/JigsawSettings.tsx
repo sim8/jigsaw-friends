@@ -12,7 +12,7 @@ import { getBuiltInImagePath } from '../utils/urls';
 const JigsawSettingsWrapper = styled.div``;
 
 const ImagePreview = styled.div`
-  border: 3px solid black;
+  border: 4px solid black;
   border-radius: 10px;
   width: 300px;
   position: relative;

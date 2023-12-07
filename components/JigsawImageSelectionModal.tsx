@@ -60,7 +60,7 @@ const ImageGridItem = styled.div<{ selected: boolean }>`
   height: 140px;
   position: relative;
 
-  border: 3px solid
+  border: 4px solid
     ${({ selected }) => (selected ? COLORS.ELECTRIC_BLUE : 'black')};
   cursor: pointer;
   overflow: hidden;
