@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
-import { getGameLink, getBuiltInImagePath } from '../utils/urls';
+import { getGameLink } from '../utils/urls';
 import useUser from '../hooks/useUser';
 import { Title } from './sharedstyles';
 import Button from './styled/Button';
@@ -42,11 +42,9 @@ export default function Lobby() {
   // ensure only host can change
   const [jigsawSettings, setJigsawSettings] = useState<JigsawSettingsType>({
     columnsRowsKey: getKeyFromColumnsRows(NUMBER_OF_PIECES_OPTIONS[0]),
-    url: getBuiltInImagePath(
-      BUILT_IN_JIGSAW_IMAGES[
-        Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
-      ].filename,
-    ),
+    url: BUILT_IN_JIGSAW_IMAGES[
+      Math.floor(Math.random() * BUILT_IN_JIGSAW_IMAGES.length)
+    ].filename,
   });
 
   const orderedLiveUserIds = useMemo(

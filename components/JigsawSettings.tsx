@@ -7,6 +7,7 @@ import FormControl from './FormControl';
 import Image from 'next/image';
 import { StyledButton } from './styled/Button';
 import JigsawImageSelectionModal from './JigsawImageSelectionModal';
+import { getBuiltInImagePath } from '../utils/urls';
 
 const JigsawSettingsWrapper = styled.div``;
 
@@ -47,7 +48,7 @@ export default function JigsawSettings({
       <FormControl title="Jigsaw">
         <ImagePreview>
           <Image
-            src={jigsawSettings.url}
+            src={getBuiltInImagePath(jigsawSettings.url)}
             alt="Jigsaw preview"
             width={300}
             height={185}
@@ -82,8 +83,9 @@ export default function JigsawSettings({
       {modalOpen && (
         <JigsawImageSelectionModal
           onClose={() => setModalOpen(false)}
+          prevUrl={jigsawSettings.url}
           onSelect={(url) => {
-            console.log(url);
+            setJigsawSettings((prev) => ({ ...prev, url }));
           }}
         />
       )}

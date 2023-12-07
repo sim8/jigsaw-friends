@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import { UnstyledButton } from './Button';
 
 type Props = {
-  width?: number;
   onClose: () => void;
   children: React.ReactNode;
+  width?: number;
 };
 
-const ModalWrapper = styled.div<{ width: number }>`
+const ModalWrapper = styled.div`
   border: 4px solid black;
-  width: ${({ width }) => width}px;
+  width: calc(100% - 100px);
   position: relative;
   background-color: white;
 `;
@@ -34,12 +34,12 @@ const CloseButton = styled(UnstyledButton)`
   padding: 15px;
 `;
 
-export default function Modal({ width = 600, children, onClose }: Props) {
+export default function Modal({ children, onClose }: Props) {
   return (
     <ScreenCover>
-      <ModalWrapper width={width}>
-        {children}
+      <ModalWrapper>
         <CloseButton onClick={onClose}>X</CloseButton>
+        {children}
       </ModalWrapper>
     </ScreenCover>
   );
