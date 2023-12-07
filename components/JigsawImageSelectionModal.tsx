@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { JigsawSettings } from '../types';
 import Modal, { ModalProps } from './styled/Modal';
-import { BUILT_IN_JIGSAW_IMAGES } from '../constants/jigsawImages';
+import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 import { getBuiltInImagePath } from '../utils/urls';
 import Button from './styled/Button';
 import { useState } from 'react';

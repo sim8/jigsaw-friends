@@ -12,7 +12,7 @@ import JigsawSettings from './JigsawSettings';
 import { JigsawSettings as JigsawSettingsType } from '../types';
 import { getKeyFromColumnsRows } from '../utils/settings';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
-import { BUILT_IN_JIGSAW_IMAGES } from '../constants/jigsawImages';
+import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 
 const LobbyContents = styled.div`
   display: flex;
