@@ -22,7 +22,10 @@ import {
 import { generateJigsawState } from './jigsawGeneration';
 import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
-import { getKeyFromColumnsRows } from '../utils/settings';
+import {
+  getColumnsRowsFromKey,
+  getKeyFromColumnsRows,
+} from '../utils/settings';
 import { NUMBER_OF_PIECES_OPTIONS } from '../constants/numberOfPiecesOptions';
 import { BUILT_IN_JIGSAW_IMAGES } from '../constants/builtInJigsawImages';
 
@@ -71,11 +74,21 @@ export function signInAndCreateGame() {
     });
 }
 
-export function startGame({ gameKey }: { gameKey: GameKey }) {
+export async function startGame({ gameKey }: { gameKey: GameKey }) {
   const { database } = getFirebase();
+
+  const dataSnapshot = await get(ref(database, `games/${gameKey}/settings`));
+  const jigsawSettings = dataSnapshot.val() as JigsawSettings;
+
+  const [columns, rows] = getColumnsRowsFromKey(jigsawSettings.columnsRowsKey);
+
   update(ref(database), {
     [`games/${gameKey}/startedAt`]: serverTimestamp(),
-    [`games/${gameKey}/jigsaw`]: generateJigsawState(JIGSAW_CONFIG),
+    [`games/${gameKey}/jigsaw`]: generateJigsawState({
+      ...JIGSAW_CONFIG,
+      columns,
+      rows,
+    }),
   });
 }
 

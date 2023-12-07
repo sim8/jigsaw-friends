@@ -14,7 +14,10 @@ export function generateJigsawState({
   jigsawHeight,
   rows,
   columns,
-}: JigsawConfig): JigsawState {
+}: JigsawConfig & {
+  rows: number;
+  columns: number;
+}): JigsawState {
   const jigsawState: JigsawState = {};
   [...Array(rows)].forEach((_, rowIndex) => {
     [...Array(columns)].forEach((_, colIndex) => {
