@@ -8,6 +8,8 @@ import {
 import { CSSProperties } from 'react';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import useDebug from '../hooks/useDebug';
+import useGame from '../hooks/useGame';
+import { getBuiltInImagePath } from '../utils/urls';
 
 const ONE_HUNDRED = 100; // percentages used for svg viewbox
 
@@ -47,14 +49,10 @@ export default function Piece({
   const { debugEnabled } = useDebug();
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
-  const pieceWidth = getPieceWidth(
-    jigsawConfig.jigsawWidth,
-    jigsawConfig.columns,
-  );
-  const pieceHeight = getPieceHeight(
-    jigsawConfig.jigsawHeight,
-    jigsawConfig.rows,
-  );
+  const { settings, rows, columns } = useGame();
+
+  const pieceWidth = getPieceWidth(jigsawConfig.jigsawWidth, columns);
+  const pieceHeight = getPieceHeight(jigsawConfig.jigsawHeight, rows);
 
   return (
     <PieceSvg
@@ -73,11 +71,11 @@ export default function Piece({
           height={ONE_HUNDRED}
         >
           <image
-            href="/images/test-image-1.jpg"
+            href={getBuiltInImagePath(settings.url)}
             x={BOUNDING_BOX_PADDING - VIEWBOX_PIECE_SIZE * colIndex}
             y={BOUNDING_BOX_PADDING - VIEWBOX_PIECE_SIZE * rowIndex}
-            width={VIEWBOX_PIECE_SIZE * jigsawConfig.columns}
-            height={VIEWBOX_PIECE_SIZE * jigsawConfig.rows}
+            width={VIEWBOX_PIECE_SIZE * columns}
+            height={VIEWBOX_PIECE_SIZE * rows}
             preserveAspectRatio="none"
           />
         </pattern>

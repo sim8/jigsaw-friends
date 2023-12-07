@@ -1,11 +1,12 @@
 import { useState, useEffect, createContext } from 'react';
 import { getFirebase } from '../firebase/clientApp';
-import { Game, GameKey, GameWithKey } from '../types';
+import { Game, GameKey, GameContextType } from '../types';
 import { ref, onValue } from 'firebase/database';
 import { CONTEXT_NOT_PROVIDED } from '../constants/app';
+import { getColumnsRowsFromKey } from '../utils/settings';
 
 export const GameContext = createContext<
-  GameWithKey | typeof CONTEXT_NOT_PROVIDED
+  GameContextType | typeof CONTEXT_NOT_PROVIDED
 >(CONTEXT_NOT_PROVIDED);
 
 export default function GameContextProviderWithLoadingState({
@@ -35,8 +36,10 @@ export default function GameContextProviderWithLoadingState({
     return <>{loadingState}</>;
   }
 
+  const [columns, rows] = getColumnsRowsFromKey(game.settings.columnsRowsKey);
+
   return (
-    <GameContext.Provider value={{ ...game, gameKey }}>
+    <GameContext.Provider value={{ ...game, gameKey, columns, rows }}>
       {children}
     </GameContext.Provider>
   );
