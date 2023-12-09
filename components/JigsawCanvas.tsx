@@ -11,6 +11,7 @@ import useGame from '../hooks/useGame';
 import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
 import { COLORS } from '../constants/colors';
+import ScaledCanvas from './ScaledCanvas';
 
 const CanvasWrapper = styled.div`
   outline: 7px solid ${COLORS.ELECTRIC_BLUE};
@@ -45,46 +46,49 @@ export default function JigsawCanvas() {
   const { draggingPieceKey } = dragPieceInfo || {};
 
   return (
-    <CanvasWrapper
-      ref={canvasRef}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (!draggingPieceKey) {
-          return;
-        }
-        const key = e.key.toLowerCase();
+    <>
+      <ScaledCanvas>Hi</ScaledCanvas>
+      <CanvasWrapper
+        ref={canvasRef}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (!draggingPieceKey) {
+            return;
+          }
+          const key = e.key.toLowerCase();
 
-        if (key === keyboardShortcuts.ROTATE_CLOCKWISE) {
-          setRotatingDirection('clockwise');
-        } else if (key === keyboardShortcuts.ROTATE_ANTICLOCKWISE) {
-          setRotatingDirection('anticlockwise');
-        }
-      }}
-      onKeyUp={() => {
-        setRotatingDirection(null);
-      }}
-      onMouseUp={() => onCancelDrag(true)}
-      onMouseLeave={() => onCancelDrag()}
-      onMouseMove={(e) => {
-        if (dragPieceInfo) {
-          onDrag(e);
-        }
-      }}
-    >
-      {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
-        return (
-          <CompositePiece
-            key={pieceKey}
-            pieceKey={pieceKey}
-            pieceState={pieceState}
-            jigsawConfig={JIGSAW_CONFIG}
-            onMouseDown={(e) => {
-              onMouseDown(e, pieceKey, pieceState);
-            }}
-            isDragging={draggingPieceKey === pieceKey}
-          />
-        );
-      })}
-    </CanvasWrapper>
+          if (key === keyboardShortcuts.ROTATE_CLOCKWISE) {
+            setRotatingDirection('clockwise');
+          } else if (key === keyboardShortcuts.ROTATE_ANTICLOCKWISE) {
+            setRotatingDirection('anticlockwise');
+          }
+        }}
+        onKeyUp={() => {
+          setRotatingDirection(null);
+        }}
+        onMouseUp={() => onCancelDrag(true)}
+        onMouseLeave={() => onCancelDrag()}
+        onMouseMove={(e) => {
+          if (dragPieceInfo) {
+            onDrag(e);
+          }
+        }}
+      >
+        {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
+          return (
+            <CompositePiece
+              key={pieceKey}
+              pieceKey={pieceKey}
+              pieceState={pieceState}
+              jigsawConfig={JIGSAW_CONFIG}
+              onMouseDown={(e) => {
+                onMouseDown(e, pieceKey, pieceState);
+              }}
+              isDragging={draggingPieceKey === pieceKey}
+            />
+          );
+        })}
+      </CanvasWrapper>
+    </>
   );
 }

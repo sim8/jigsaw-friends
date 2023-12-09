@@ -1,5 +1,8 @@
 import { JigsawConfig } from '../types';
 
+export const CANVAS_WIDTH_V2 = 10000;
+export const CANVAS_HEIGHT_V2 = 6180;
+
 export const CANVAS_WIDTH = 800;
 export const CANVAS_HEIGHT = 600;
 const JIGSAW_WIDTH = 400;
