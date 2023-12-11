@@ -17,8 +17,6 @@ export type PieceState = {
 export type JigsawState = Record<PieceKey, PieceState>;
 
 export type JigsawConfig = {
-  canvasWidth: number;
-  canvasHeight: number;
   jigsawWidth: number;
   jigsawHeight: number;
 };
