@@ -59,6 +59,8 @@ export type GameContextType = Game & {
   gameKey: GameKey;
   rows: number;
   columns: number;
+  imageWidth: number;
+  imageHeight: number;
 };
 
 export type Vector = [number, number];

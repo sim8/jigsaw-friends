@@ -4,6 +4,7 @@ import { Game, GameKey, GameContextType } from '../types';
 import { ref, onValue } from 'firebase/database';
 import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 import { getColumnsRowsFromKey } from '../utils/settings';
+import useImageDimensions from '../hooks/useImageDimensions';
 
 export const GameContext = createContext<
   GameContextType | typeof CONTEXT_NOT_PROVIDED
@@ -32,6 +33,10 @@ export default function GameContextProviderWithLoadingState({
     return () => unsubscriber();
   }, [gameKey]);
 
+  const { height: imageHeight, width: imageWidth } = useImageDimensions(
+    game && game.settings.url,
+  );
+
   if (game === null) {
     return <>{loadingState}</>;
   }
@@ -39,7 +44,9 @@ export default function GameContextProviderWithLoadingState({
   const [columns, rows] = getColumnsRowsFromKey(game.settings.columnsRowsKey);
 
   return (
-    <GameContext.Provider value={{ ...game, gameKey, columns, rows }}>
+    <GameContext.Provider
+      value={{ ...game, gameKey, columns, rows, imageHeight, imageWidth }}
+    >
       {children}
     </GameContext.Provider>
   );
