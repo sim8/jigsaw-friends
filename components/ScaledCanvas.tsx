@@ -13,12 +13,11 @@ const CanvasWrapper = styled.div`
   box-sizing: border-box;
 `;
 
-const Canvas = styled.div<{ scaleFactor: number }>`
+const Canvas = styled.div`
   position: absolute;
 
   width: ${CANVAS_WIDTH_V2}px;
   height: ${CANVAS_HEIGHT_V2}px;
-  transform: translate(-50%, -50%) scale(${({ scaleFactor }) => scaleFactor});
 
   border: 4px solid orange;
 
@@ -47,7 +46,12 @@ export default function ScaledCanvas({ ...props }: Props) {
 
   return (
     <CanvasWrapper ref={wrapperRef}>
-      <Canvas {...props} scaleFactor={scaleFactor} />
+      <Canvas
+        {...props}
+        style={{
+          transform: `translate(-50%, -50%) scale(${scaleFactor})`,
+        }}
+      />
     </CanvasWrapper>
   );
 }
