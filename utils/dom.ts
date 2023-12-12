@@ -1,6 +1,5 @@
 import { MouseEvent } from 'react';
 
-// TODO can we replace this with pos within canvas? Might be simpler
 export function getMousePosWithinElement(
   e: MouseEvent<HTMLDivElement>,
   el: HTMLElement,
@@ -8,5 +7,10 @@ export function getMousePosWithinElement(
   const canvasRect = el.getBoundingClientRect();
   const left = e.clientX - canvasRect.left;
   const top = e.clientY - canvasRect.top;
-  return { left, top };
+
+  // these should be almost equal
+  const scaleFactorX = el.clientWidth / canvasRect.width;
+  const scaleFactorY = el.clientHeight / canvasRect.height;
+
+  return { left: left * scaleFactorX, top: top * scaleFactorY };
 }

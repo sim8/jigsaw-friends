@@ -16,13 +16,6 @@ export type PieceState = {
 
 export type JigsawState = Record<PieceKey, PieceState>;
 
-export type JigsawConfig = {
-  canvasWidth: number;
-  canvasHeight: number;
-  jigsawWidth: number;
-  jigsawHeight: number;
-};
-
 export type DragPieceInfo = {
   draggingPieceKey: PieceKey;
   initialPieceMouseOffsetX: number;
@@ -59,6 +52,8 @@ export type GameContextType = Game & {
   gameKey: GameKey;
   rows: number;
   columns: number;
+  jigsawWidth: number;
+  jigsawHeight: number;
 };
 
 export type Vector = [number, number];

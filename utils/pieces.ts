@@ -1,4 +1,3 @@
-import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { JigsawState, Piece, PieceKey, PieceState, Vector } from '../types';
 import { calcHypotenuse } from './misc';
 
@@ -78,19 +77,21 @@ export function getSolutionPieceVector({
   pieceBKey,
   rows,
   columns,
+  jigsawWidth,
+  jigsawHeight,
 }: {
   pieceAKey: PieceKey;
   pieceBKey: PieceKey;
   rows: number;
   columns: number;
+  jigsawWidth: number;
+  jigsawHeight: number;
 }): Vector {
   const pieceA = getPieceFromKey(pieceAKey);
   const pieceB = getPieceFromKey(pieceBKey);
   return [
-    (pieceB.colIndex - pieceA.colIndex) *
-      getPieceWidth(JIGSAW_CONFIG.jigsawWidth, columns),
-    (pieceB.rowIndex - pieceA.rowIndex) *
-      getPieceHeight(JIGSAW_CONFIG.jigsawHeight, rows),
+    (pieceB.colIndex - pieceA.colIndex) * getPieceWidth(jigsawWidth, columns),
+    (pieceB.rowIndex - pieceA.rowIndex) * getPieceHeight(jigsawHeight, rows),
   ];
 }
 
@@ -111,18 +112,24 @@ export function getRequiredStateToJoinNeighbour({
   neighbourState,
   rows,
   columns,
+  jigsawWidth,
+  jigsawHeight,
 }: {
   heldPieceKey: PieceKey;
   neighbourKey: PieceKey;
   neighbourState: PieceState;
   rows: number;
   columns: number;
+  jigsawWidth: number;
+  jigsawHeight: number;
 }): PieceState {
   const unrotatedVector = getSolutionPieceVector({
     pieceAKey: neighbourKey,
     pieceBKey: heldPieceKey,
     rows,
     columns,
+    jigsawWidth,
+    jigsawHeight,
   });
   const rotatedVector = rotateVector(unrotatedVector, neighbourState.rotation);
   return {

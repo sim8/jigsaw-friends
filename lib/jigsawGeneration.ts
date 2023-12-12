@@ -1,5 +1,9 @@
-import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
-import { JigsawConfig, JigsawState, PieceState } from '../types';
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  PIECE_ROTATION_AMOUNT,
+} from '../constants/uiConfig';
+import { JigsawState, PieceState } from '../types';
 import { getPieceHeight, getPieceKey, getPieceWidth } from '../utils/pieces';
 
 function getRandomRotation() {
@@ -8,13 +12,13 @@ function getRandomRotation() {
 }
 
 export function generateJigsawState({
-  canvasWidth,
-  canvasHeight,
   jigsawWidth,
   jigsawHeight,
   rows,
   columns,
-}: JigsawConfig & {
+}: {
+  jigsawWidth: number;
+  jigsawHeight: number;
   rows: number;
   columns: number;
 }): JigsawState {
@@ -27,8 +31,8 @@ export function generateJigsawState({
       });
       const pieceState: PieceState = {
         top:
-          Math.random() * (canvasHeight - getPieceHeight(jigsawHeight, rows)),
-        left: Math.random() * (canvasWidth - getPieceWidth(jigsawWidth, rows)),
+          Math.random() * (CANVAS_HEIGHT - getPieceHeight(jigsawHeight, rows)),
+        left: Math.random() * (CANVAS_WIDTH - getPieceWidth(jigsawWidth, rows)),
         rotation: getRandomRotation(),
       };
       jigsawState[pieceKey] = pieceState;

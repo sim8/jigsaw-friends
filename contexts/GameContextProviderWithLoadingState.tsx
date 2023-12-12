@@ -4,6 +4,7 @@ import { Game, GameKey, GameContextType } from '../types';
 import { ref, onValue } from 'firebase/database';
 import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 import { getColumnsRowsFromKey } from '../utils/settings';
+import useJigsawDimensions from '../hooks/useJigsawDimensions';
 
 export const GameContext = createContext<
   GameContextType | typeof CONTEXT_NOT_PROVIDED
@@ -32,6 +33,10 @@ export default function GameContextProviderWithLoadingState({
     return () => unsubscriber();
   }, [gameKey]);
 
+  const { width: jigsawWidth, height: jigsawHeight } = useJigsawDimensions(
+    game && game.settings.url,
+  );
+
   if (game === null) {
     return <>{loadingState}</>;
   }
@@ -39,7 +44,9 @@ export default function GameContextProviderWithLoadingState({
   const [columns, rows] = getColumnsRowsFromKey(game.settings.columnsRowsKey);
 
   return (
-    <GameContext.Provider value={{ ...game, gameKey, columns, rows }}>
+    <GameContext.Provider
+      value={{ ...game, gameKey, columns, rows, jigsawWidth, jigsawHeight }}
+    >
       {children}
     </GameContext.Provider>
   );

@@ -10,7 +10,6 @@ import {
   getParentPieceKey,
 } from '../utils/pieces';
 import { calcHypotenuse } from '../utils/misc';
-import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import {
   PIECE_SNAP_ROTATION_THRESHOLD,
   PIECE_SNAP_DISTANCE_PERCENTAGE_THRESHOLD,
@@ -25,7 +24,7 @@ export default function usePieceJoins({
   dragPieceInfo: DragPieceInfo | null;
 }) {
   const { draggingPieceKey } = dragPieceInfo || {};
-  const { rows, columns } = useGame();
+  const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
   const solutionNeighbourKeys = useMemo(() => {
     if (!draggingPieceKey) {
       return null;
@@ -38,11 +37,11 @@ export default function usePieceJoins({
   }, [draggingPieceKey, columns, rows]);
 
   const pieceSnapThresholdDistance = useMemo(() => {
-    const pieceWidth = getPieceWidth(JIGSAW_CONFIG.jigsawWidth, columns);
-    const pieceHeight = getPieceHeight(JIGSAW_CONFIG.jigsawHeight, rows);
+    const pieceWidth = getPieceWidth(jigsawWidth, columns);
+    const pieceHeight = getPieceHeight(jigsawHeight, rows);
     const pieceDiagonal = calcHypotenuse(pieceWidth, pieceHeight);
     return pieceDiagonal * PIECE_SNAP_DISTANCE_PERCENTAGE_THRESHOLD;
-  }, [columns, rows]);
+  }, [columns, rows, jigsawWidth, jigsawHeight]);
 
   return {
     getJoinablePiece: (): PieceKey | null => {
@@ -68,6 +67,8 @@ export default function usePieceJoins({
           neighbourState,
           rows,
           columns,
+          jigsawWidth,
+          jigsawHeight,
         });
         const distance = getPieceDistance(piece, requiredStateToJoinNeighbour);
         const rotationDifference = getPieceRotationDifference(

@@ -1,4 +1,4 @@
-import { JigsawConfig, PieceKey, PieceState } from '../types';
+import { PieceKey, PieceState } from '../types';
 import { MouseEventHandler } from 'react';
 import PieceSvg from './PieceSvg';
 import {
@@ -15,7 +15,6 @@ import useGame from '../hooks/useGame';
 type Props = {
   pieceKey: PieceKey;
   pieceState: PieceState;
-  jigsawConfig: JigsawConfig;
   isDragging: boolean;
   onMouseDown: MouseEventHandler<HTMLDivElement>;
 };
@@ -39,15 +38,14 @@ const PieceCenterDebug = styled.div`
 export default function CompositePiece({
   pieceKey,
   pieceState,
-  jigsawConfig,
   isDragging,
   onMouseDown,
 }: Props) {
   const { debugEnabled } = useDebug();
-  const { rows, columns } = useGame();
+  const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
 
-  const pieceWidth = getPieceWidth(jigsawConfig.jigsawWidth, columns);
-  const pieceHeight = getPieceHeight(jigsawConfig.jigsawHeight, rows);
+  const pieceWidth = getPieceWidth(jigsawWidth, columns);
+  const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
   const { top, left, rotation, childPieces } = pieceState;
 
@@ -72,7 +70,6 @@ export default function CompositePiece({
     >
       <PieceSvg
         pieceKey={pieceKey}
-        jigsawConfig={jigsawConfig}
         isDragging={isDragging}
         style={{
           top: -boundingBoxHeightOffset,
@@ -86,12 +83,13 @@ export default function CompositePiece({
             pieceBKey: childKey,
             rows,
             columns,
+            jigsawWidth,
+            jigsawHeight,
           });
           return (
             <PieceSvg
               key={childKey}
               pieceKey={childKey}
-              jigsawConfig={jigsawConfig}
               isDragging={isDragging}
               style={{
                 left: childVector[0] - boundingBoxWidthOffset,

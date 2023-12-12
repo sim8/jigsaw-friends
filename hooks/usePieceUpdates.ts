@@ -145,6 +145,7 @@ export default function usePieceUpdates({
               e,
               canvasRef.current,
             );
+
             const initialPieceMouseOffsetX = left - pieceState.left;
             const initialPieceMouseOffsetY = top - pieceState.top;
 

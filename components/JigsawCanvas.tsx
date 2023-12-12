@@ -1,23 +1,10 @@
-import styled from 'styled-components';
 import CompositePiece from './CompositePiece';
 import { useRef } from 'react';
 import { keyboardShortcuts } from '../constants/keyboardShortcuts';
-import {
-  CANVAS_WIDTH,
-  CANVAS_HEIGHT,
-  JIGSAW_CONFIG,
-} from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
 import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
-import { COLORS } from '../constants/colors';
-
-const CanvasWrapper = styled.div`
-  outline: 7px solid ${COLORS.ELECTRIC_BLUE};
-  height: ${CANVAS_HEIGHT}px;
-  width: ${CANVAS_WIDTH}px;
-  position: relative;
-`;
+import ScaledCanvas from './ScaledCanvas';
 
 export default function JigsawCanvas() {
   const { jigsaw: jigsawState } = useGame();
@@ -45,8 +32,8 @@ export default function JigsawCanvas() {
   const { draggingPieceKey } = dragPieceInfo || {};
 
   return (
-    <CanvasWrapper
-      ref={canvasRef}
+    <ScaledCanvas
+      canvasRef={canvasRef}
       tabIndex={0}
       onKeyDown={(e) => {
         if (!draggingPieceKey) {
@@ -77,7 +64,6 @@ export default function JigsawCanvas() {
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
-            jigsawConfig={JIGSAW_CONFIG}
             onMouseDown={(e) => {
               onMouseDown(e, pieceKey, pieceState);
             }}
@@ -85,6 +71,6 @@ export default function JigsawCanvas() {
           />
         );
       })}
-    </CanvasWrapper>
+    </ScaledCanvas>
   );
 }
