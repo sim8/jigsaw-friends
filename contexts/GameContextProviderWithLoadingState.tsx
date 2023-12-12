@@ -4,7 +4,7 @@ import { Game, GameKey, GameContextType } from '../types';
 import { ref, onValue } from 'firebase/database';
 import { CONTEXT_NOT_PROVIDED } from '../constants/app';
 import { getColumnsRowsFromKey } from '../utils/settings';
-import useImageDimensions from '../hooks/useImageDimensions';
+import useJigsawDimensions from '../hooks/useJigsawDimensions';
 
 export const GameContext = createContext<
   GameContextType | typeof CONTEXT_NOT_PROVIDED
@@ -33,9 +33,7 @@ export default function GameContextProviderWithLoadingState({
     return () => unsubscriber();
   }, [gameKey]);
 
-  const { height: imageHeight, width: imageWidth } = useImageDimensions(
-    game && game.settings.url,
-  );
+  const { height, width } = useJigsawDimensions(game && game.settings.url);
 
   if (game === null) {
     return <>{loadingState}</>;
@@ -45,7 +43,7 @@ export default function GameContextProviderWithLoadingState({
 
   return (
     <GameContext.Provider
-      value={{ ...game, gameKey, columns, rows, imageHeight, imageWidth }}
+      value={{ ...game, gameKey, columns, rows, height, width }}
     >
       {children}
     </GameContext.Provider>
