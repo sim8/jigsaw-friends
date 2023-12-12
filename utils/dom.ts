@@ -8,6 +8,9 @@ export function getMousePosWithinElement(
   const left = e.clientX - canvasRect.left;
   const top = e.clientY - canvasRect.top;
 
-  const scaleFactor = el.clientWidth / canvasRect.width; // assume same for width + height
-  return { left: left * scaleFactor, top: top * scaleFactor };
+  // these should be almost equal
+  const scaleFactorX = el.clientWidth / canvasRect.width;
+  const scaleFactorY = el.clientHeight / canvasRect.height;
+
+  return { left: left * scaleFactorX, top: top * scaleFactorY };
 }

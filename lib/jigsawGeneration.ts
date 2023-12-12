@@ -1,5 +1,8 @@
-import { CANVAS_HEIGHT_V2, CANVAS_WIDTH_V2 } from '../constants/jigsawConfig';
-import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  PIECE_ROTATION_AMOUNT,
+} from '../constants/uiConfig';
 import { JigsawState, PieceState } from '../types';
 import { getPieceHeight, getPieceKey, getPieceWidth } from '../utils/pieces';
 
@@ -28,10 +31,8 @@ export function generateJigsawState({
       });
       const pieceState: PieceState = {
         top:
-          Math.random() *
-          (CANVAS_HEIGHT_V2 - getPieceHeight(jigsawHeight, rows)),
-        left:
-          Math.random() * (CANVAS_WIDTH_V2 - getPieceWidth(jigsawWidth, rows)),
+          Math.random() * (CANVAS_HEIGHT - getPieceHeight(jigsawHeight, rows)),
+        left: Math.random() * (CANVAS_WIDTH - getPieceWidth(jigsawWidth, rows)),
         rotation: getRandomRotation(),
       };
       jigsawState[pieceKey] = pieceState;

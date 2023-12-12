@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CANVAS_WIDTH_V2, CANVAS_HEIGHT_V2 } from '../constants/jigsawConfig';
+import { CANVAS_WIDTH, CANVAS_HEIGHT } from '../constants/uiConfig';
 import { RefObject, useCallback, useRef, useState } from 'react';
 import useResizeObserver from '../hooks/useResizeObserver';
 
@@ -16,8 +16,8 @@ const CanvasWrapper = styled.div`
 const Canvas = styled.div`
   position: absolute;
 
-  width: ${CANVAS_WIDTH_V2}px;
-  height: ${CANVAS_HEIGHT_V2}px;
+  width: ${CANVAS_WIDTH}px;
+  height: ${CANVAS_HEIGHT}px;
 
   outline: 4px solid orange;
 
@@ -35,10 +35,7 @@ export default function ScaledCanvas({ canvasRef, ...props }: Props) {
   const adjustScaleFactor = useCallback((entries: ResizeObserverEntry[]) => {
     const { width, height } = entries[0].contentRect;
 
-    const scaleFactor = Math.min(
-      width / CANVAS_WIDTH_V2,
-      height / CANVAS_HEIGHT_V2,
-    );
+    const scaleFactor = Math.min(width / CANVAS_WIDTH, height / CANVAS_HEIGHT);
     setScaleFactor(scaleFactor);
   }, []);
 
