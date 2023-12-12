@@ -20,7 +20,6 @@ import {
   Uid,
 } from '../types';
 import { generateJigsawState } from './jigsawGeneration';
-import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
 import {
   getColumnsRowsFromKey,
@@ -74,7 +73,15 @@ export function signInAndCreateGame() {
     });
 }
 
-export async function startGame({ gameKey }: { gameKey: GameKey }) {
+export async function startGame({
+  gameKey,
+  jigsawWidth,
+  jigsawHeight,
+}: {
+  gameKey: GameKey;
+  jigsawWidth: number;
+  jigsawHeight: number;
+}) {
   const { database } = getFirebase();
 
   const dataSnapshot = await get(ref(database, `games/${gameKey}/settings`));
@@ -85,7 +92,8 @@ export async function startGame({ gameKey }: { gameKey: GameKey }) {
   update(ref(database), {
     [`games/${gameKey}/startedAt`]: serverTimestamp(),
     [`games/${gameKey}/jigsaw`]: generateJigsawState({
-      ...JIGSAW_CONFIG,
+      jigsawWidth,
+      jigsawHeight,
       columns,
       rows,
     }),

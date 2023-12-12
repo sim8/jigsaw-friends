@@ -44,10 +44,10 @@ export default function CompositePiece({
   onMouseDown,
 }: Props) {
   const { debugEnabled } = useDebug();
-  const { rows, columns } = useGame();
+  const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
 
-  const pieceWidth = getPieceWidth(jigsawConfig.jigsawWidth, columns);
-  const pieceHeight = getPieceHeight(jigsawConfig.jigsawHeight, rows);
+  const pieceWidth = getPieceWidth(jigsawWidth, columns);
+  const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
   const { top, left, rotation, childPieces } = pieceState;
 

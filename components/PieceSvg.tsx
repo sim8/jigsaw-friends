@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { JigsawConfig, PieceKey } from '../types';
+import { PieceKey } from '../types';
 import {
   getPieceFromKey,
   getPieceHeight,
@@ -35,24 +35,18 @@ const PieceSvg = styled.svg<{
 
 type Props = {
   pieceKey: PieceKey;
-  jigsawConfig: JigsawConfig;
   isDragging: boolean;
   style?: CSSProperties;
 };
 
-export default function Piece({
-  pieceKey,
-  jigsawConfig,
-  isDragging,
-  style,
-}: Props) {
+export default function Piece({ pieceKey, isDragging, style }: Props) {
   const { debugEnabled } = useDebug();
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
-  const { settings, rows, columns } = useGame();
+  const { settings, rows, columns, jigsawWidth, jigsawHeight } = useGame();
 
-  const pieceWidth = getPieceWidth(jigsawConfig.jigsawWidth, columns);
-  const pieceHeight = getPieceHeight(jigsawConfig.jigsawHeight, rows);
+  const pieceWidth = getPieceWidth(jigsawWidth, columns);
+  const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
   return (
     <PieceSvg

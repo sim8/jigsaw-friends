@@ -31,7 +31,7 @@ const PlayerCardWrapper = styled.div`
 `;
 
 export default function Lobby() {
-  const { gameKey, liveUsers, host } = useGame();
+  const { gameKey, liveUsers, host, jigsawWidth, jigsawHeight } = useGame();
   const { user } = useUser();
 
   const orderedLiveUserIds = useMemo(
@@ -80,7 +80,7 @@ export default function Lobby() {
         <JigsawSettings />
       </LobbyContents>
       <Button
-        onClick={() => startGame({ gameKey })}
+        onClick={() => startGame({ gameKey, jigsawWidth, jigsawHeight })}
         disabled={user ? user.uid !== host : true}
         size="large"
         style={{ display: 'block', margin: '0 auto' }}

@@ -57,8 +57,8 @@ export type GameContextType = Game & {
   gameKey: GameKey;
   rows: number;
   columns: number;
-  width: number;
-  height: number;
+  jigsawWidth: number;
+  jigsawHeight: number;
 };
 
 export type Vector = [number, number];

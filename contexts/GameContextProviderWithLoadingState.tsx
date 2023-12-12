@@ -33,7 +33,9 @@ export default function GameContextProviderWithLoadingState({
     return () => unsubscriber();
   }, [gameKey]);
 
-  const { height, width } = useJigsawDimensions(game && game.settings.url);
+  const { width: jigsawWidth, height: jigsawHeight } = useJigsawDimensions(
+    game && game.settings.url,
+  );
 
   if (game === null) {
     return <>{loadingState}</>;
@@ -43,7 +45,7 @@ export default function GameContextProviderWithLoadingState({
 
   return (
     <GameContext.Provider
-      value={{ ...game, gameKey, columns, rows, height, width }}
+      value={{ ...game, gameKey, columns, rows, jigsawWidth, jigsawHeight }}
     >
       {children}
     </GameContext.Provider>
