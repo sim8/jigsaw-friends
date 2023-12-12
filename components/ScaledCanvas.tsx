@@ -19,7 +19,7 @@ const Canvas = styled.div`
   width: ${CANVAS_WIDTH_V2}px;
   height: ${CANVAS_HEIGHT_V2}px;
 
-  border: 4px solid orange;
+  outline: 4px solid orange;
 
   top: 50%;
   left: 50%;
