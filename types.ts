@@ -16,11 +16,6 @@ export type PieceState = {
 
 export type JigsawState = Record<PieceKey, PieceState>;
 
-export type JigsawConfig = {
-  jigsawWidth: number;
-  jigsawHeight: number;
-};
-
 export type DragPieceInfo = {
   draggingPieceKey: PieceKey;
   initialPieceMouseOffsetX: number;

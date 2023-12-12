@@ -1,7 +1,6 @@
 import CompositePiece from './CompositePiece';
 import { useRef } from 'react';
 import { keyboardShortcuts } from '../constants/keyboardShortcuts';
-import { JIGSAW_CONFIG } from '../constants/jigsawConfig';
 import useGame from '../hooks/useGame';
 import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
@@ -65,7 +64,6 @@ export default function JigsawCanvas() {
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
-            jigsawConfig={JIGSAW_CONFIG}
             onMouseDown={(e) => {
               onMouseDown(e, pieceKey, pieceState);
             }}

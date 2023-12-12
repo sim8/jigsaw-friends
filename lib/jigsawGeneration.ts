@@ -1,6 +1,6 @@
 import { CANVAS_HEIGHT_V2, CANVAS_WIDTH_V2 } from '../constants/jigsawConfig';
 import { PIECE_ROTATION_AMOUNT } from '../constants/uiConfig';
-import { JigsawConfig, JigsawState, PieceState } from '../types';
+import { JigsawState, PieceState } from '../types';
 import { getPieceHeight, getPieceKey, getPieceWidth } from '../utils/pieces';
 
 function getRandomRotation() {
@@ -13,7 +13,9 @@ export function generateJigsawState({
   jigsawHeight,
   rows,
   columns,
-}: JigsawConfig & {
+}: {
+  jigsawWidth: number;
+  jigsawHeight: number;
   rows: number;
   columns: number;
 }): JigsawState {

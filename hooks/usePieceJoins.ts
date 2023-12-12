@@ -67,6 +67,8 @@ export default function usePieceJoins({
           neighbourState,
           rows,
           columns,
+          jigsawWidth,
+          jigsawHeight,
         });
         const distance = getPieceDistance(piece, requiredStateToJoinNeighbour);
         const rotationDifference = getPieceRotationDifference(
