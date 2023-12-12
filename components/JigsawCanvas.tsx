@@ -34,8 +34,7 @@ export default function JigsawCanvas() {
 
   return (
     <ScaledCanvas
-      // @ts-expect-error TODO
-      ref={canvasRef}
+      canvasRef={canvasRef}
       tabIndex={0}
       onKeyDown={(e) => {
         if (!draggingPieceKey) {

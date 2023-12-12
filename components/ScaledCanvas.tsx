@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { CANVAS_WIDTH_V2, CANVAS_HEIGHT_V2 } from '../constants/jigsawConfig';
-import { useCallback, useRef, useState } from 'react';
+import { RefObject, useCallback, useRef, useState } from 'react';
 import useResizeObserver from '../hooks/useResizeObserver';
 
 const CanvasWrapper = styled.div`
@@ -25,9 +25,11 @@ const Canvas = styled.div`
   left: 50%;
 `;
 
-type Props = React.HTMLAttributes<HTMLDivElement>;
+type Props = React.HTMLAttributes<HTMLDivElement> & {
+  canvasRef: RefObject<HTMLDivElement>;
+};
 
-export default function ScaledCanvas({ ...props }: Props) {
+export default function ScaledCanvas({ canvasRef, ...props }: Props) {
   const [scaleFactor, setScaleFactor] = useState(0.9);
 
   const adjustScaleFactor = useCallback((entries: ResizeObserverEntry[]) => {
@@ -47,10 +49,11 @@ export default function ScaledCanvas({ ...props }: Props) {
   return (
     <CanvasWrapper ref={wrapperRef}>
       <Canvas
-        {...props}
+        ref={canvasRef}
         style={{
           transform: `translate(-50%, -50%) scale(${scaleFactor})`,
         }}
+        {...props}
       />
     </CanvasWrapper>
   );
