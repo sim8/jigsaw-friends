@@ -22,6 +22,9 @@ export function generateJigsawState({
   rows: number;
   columns: number;
 }): JigsawState {
+  const pieceHeight = getPieceHeight(jigsawHeight, rows);
+  const pieceWidth = getPieceWidth(jigsawWidth, rows);
+
   const jigsawState: JigsawState = {};
   [...Array(rows)].forEach((_, rowIndex) => {
     [...Array(columns)].forEach((_, colIndex) => {
@@ -29,10 +32,10 @@ export function generateJigsawState({
         colIndex,
         rowIndex,
       });
+      // top/left is for center of piece - ensure it's min. half a width/height away from canvas edge
       const pieceState: PieceState = {
-        top:
-          Math.random() * (CANVAS_HEIGHT - getPieceHeight(jigsawHeight, rows)),
-        left: Math.random() * (CANVAS_WIDTH - getPieceWidth(jigsawWidth, rows)),
+        top: Math.random() * (CANVAS_HEIGHT - pieceHeight) + pieceHeight / 2,
+        left: Math.random() * (CANVAS_WIDTH - pieceWidth) + pieceWidth / 2,
         rotation: getRandomRotation(),
       };
       jigsawState[pieceKey] = pieceState;
