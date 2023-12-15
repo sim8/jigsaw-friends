@@ -75,7 +75,18 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
         </pattern>
       </defs>
       <path
-        d="M25,25 L75,25 L75,75 L25,75 L25,25"
+        d={`
+          M 25,25
+          Q 45,30 48,26
+          Q 50,24 47,20
+          Q 44,18 49,17
+          Q 55,17 56,21
+          Q 50,24 57,23
+          L75,25
+          L75,75
+          L25,75
+          L25,25
+        `}
         fill={`url(#${pieceKey})`}
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',

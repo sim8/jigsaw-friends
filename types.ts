@@ -58,6 +58,8 @@ export type GameContextType = Game & {
 
 export type Vector = [number, number];
 
+export type Coordinates = [number, number];
+
 export type BuiltInJigsawImage = {
   creditHtml: string;
   filename: string;
@@ -69,3 +71,10 @@ export type JigsawSettings = {
   columnsRowsKey: string;
   url: string;
 };
+
+export type SvgCommand =
+  | ['M', Coordinates]
+  | ['Q', Coordinates, Coordinates]
+  | ['L', Coordinates];
+
+export type SvgPath = SvgCommand[];
