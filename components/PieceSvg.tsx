@@ -10,6 +10,7 @@ import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
 import { getBuiltInImagePath } from '../utils/urls';
+import { getPiecePath } from '../utils/svg';
 
 const ONE_HUNDRED = 100; // percentages used for svg viewbox
 
@@ -43,10 +44,20 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
   const { debugEnabled } = useDebug();
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
-  const { settings, rows, columns, jigsawWidth, jigsawHeight } = useGame();
+  const { settings, rows, columns, jigsawWidth, jigsawHeight, startedAt } =
+    useGame();
 
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
+
+  const path = getPiecePath({
+    columns,
+    rows,
+    colIndex,
+    rowIndex,
+    seed: startedAt as number,
+  });
+  console.log('🚀 ~ file: PieceSvg.tsx:60 ~ Piece ~ path:', path);
 
   return (
     <PieceSvg
@@ -75,18 +86,19 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
         </pattern>
       </defs>
       <path
-        d={`
-          M 25,25
-          Q 45,30 48,26
-          Q 50,24 47,20
-          Q 44,18 49,17
-          Q 55,17 56,21
-          Q 50,24 57,23
-          L75,25
-          L75,75
-          L25,75
-          L25,25
-        `}
+        d={path}
+        // d={`
+        //   M 25,25
+        //   Q 45,30 48,26
+        //   Q 50,24 47,20
+        //   Q 44,18 49,17
+        //   Q 55,17 56,21
+        //   Q 50,24 57,23
+        //   L75,25
+        //   L75,75
+        //   L25,75
+        //   L25,25
+        // `}
         fill={`url(#${pieceKey})`}
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
