@@ -5,11 +5,12 @@ import {
   getPieceHeight,
   getPieceWidth,
 } from '../utils/pieces';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
 import { getBuiltInImagePath } from '../utils/urls';
+import { getPiecePath } from '../utils/svg';
 
 const ONE_HUNDRED = 100; // percentages used for svg viewbox
 
@@ -43,10 +44,23 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
   const { debugEnabled } = useDebug();
   const { colIndex, rowIndex } = getPieceFromKey(pieceKey);
 
-  const { settings, rows, columns, jigsawWidth, jigsawHeight } = useGame();
+  const { settings, rows, columns, jigsawWidth, jigsawHeight, startedAt } =
+    useGame();
 
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
+
+  const path = useMemo(
+    () =>
+      getPiecePath({
+        columns,
+        rows,
+        colIndex,
+        rowIndex,
+        seed: startedAt as number,
+      }),
+    [columns, rows, colIndex, rowIndex, startedAt],
+  );
 
   return (
     <PieceSvg
@@ -75,7 +89,7 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
         </pattern>
       </defs>
       <path
-        d="M25,25 L75,25 L75,75 L25,75 L25,25"
+        d={path}
         fill={`url(#${pieceKey})`}
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
