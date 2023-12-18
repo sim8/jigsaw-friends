@@ -64,6 +64,10 @@ export function getPiecePath({
   rowIndex: number;
   seed: number;
 }) {
+  /**
+   * Odd pieces are drawn anti-clockwise - this allows the same
+   * edge paths to be used for neighbouring pieces
+   */
   const isOdd = (colIndex + rowIndex) % 2 === 1;
 
   const edges = [
