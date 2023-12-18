@@ -54,7 +54,17 @@ function getEdgePath({
   const isJigsawEdge = edgeIndex === 0 || edgeIndex + 1 === totalEdges;
   const { edgePath, flipped } = isJigsawEdge
     ? { edgePath: FLAT_EDGE, flipped: false }
-    : getSeededRandomEdgePath(seed + edgeIndex + (rotation % 2) * 10000);
+    : getSeededRandomEdgePath(
+        /**
+         * Ensure a unique seed for each piece edge.
+         *
+         * - Use the rotation remainder as neighbouring edges
+         *   may have rotations of e.g. 2 + 4.
+         * - Multiply rotation to avoid seed clashes with
+         *   edgeIndexes (avoid visible patterns)
+         */
+        seed + edgeIndex + (rotation % 2) * 10000,
+      );
 
   return edgePath
     .map(
