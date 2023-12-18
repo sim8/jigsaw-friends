@@ -17,8 +17,6 @@ const REGULAR_TAB_EDGE: SvgPath = [
   ['T', [48, -5]],
   ['T', [50, 5]],
   ['T', [100, 0]],
-  // ['L', [50, -4]],
-  // ['L', [100, 0]],
 ];
 
 export const NON_FLAT_EDGES = [REGULAR_TAB_EDGE];

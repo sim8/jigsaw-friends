@@ -5,7 +5,7 @@ import {
   getPieceHeight,
   getPieceWidth,
 } from '../utils/pieces';
-import { CSSProperties } from 'react';
+import { CSSProperties, useMemo } from 'react';
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
@@ -50,13 +50,17 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
-  const path = getPiecePath({
-    columns,
-    rows,
-    colIndex,
-    rowIndex,
-    seed: startedAt as number,
-  });
+  const path = useMemo(
+    () =>
+      getPiecePath({
+        columns,
+        rows,
+        colIndex,
+        rowIndex,
+        seed: startedAt as number,
+      }),
+    [columns, rows, colIndex, rowIndex, startedAt],
+  );
 
   return (
     <PieceSvg
@@ -86,18 +90,6 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
       </defs>
       <path
         d={path}
-        // d={`
-        //   M 25,25
-        //   Q 45,30 48,26
-        //   Q 50,24 47,20
-        //   Q 44,18 49,17
-        //   Q 55,17 56,21
-        //   Q 50,24 57,23
-        //   L75,25
-        //   L75,75
-        //   L25,75
-        //   L25,25
-        // `}
         fill={`url(#${pieceKey})`}
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
