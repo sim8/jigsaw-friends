@@ -1,15 +1,41 @@
 import { FLAT_EDGE, NON_FLAT_EDGES } from '../constants/pieceEdges';
-import { Coordinates, Vector } from '../types';
+import { Coordinates } from '../types';
 import {
+  flipVertically,
   rotateClockwise,
   scaleForBoundingBox,
   translate,
 } from './coordinatesTransforms';
+import { mulberry32 } from './misc';
 
 function getSeededRandomEdgePath(seed: number) {
-  // TODO return seeded random item from array
-  // mulberry32?
-  return NON_FLAT_EDGES[0];
+  const rand = mulberry32(seed);
+  return {
+    edgePath: NON_FLAT_EDGES[Math.floor(rand * NON_FLAT_EDGES.length)],
+    flipped: rand > 0.5,
+  };
+}
+
+function renderCoordinatesWithTransforms({
+  coordinates,
+  rotation,
+  flipped,
+  drawAntiClockwise,
+}: {
+  coordinates: Coordinates;
+  rotation: number;
+  flipped: boolean;
+  drawAntiClockwise?: boolean;
+}) {
+  const maybeFlipped = flipped ? flipVertically(coordinates) : coordinates;
+  const maybeTranslated = drawAntiClockwise
+    ? translate(maybeFlipped, [0, 100])
+    : maybeFlipped;
+  const rotated = rotateClockwise(
+    maybeTranslated,
+    drawAntiClockwise ? (rotation + 2) % 4 : rotation,
+  );
+  return scaleForBoundingBox(rotated).join(',');
 }
 
 function getEdgePath({
@@ -26,25 +52,23 @@ function getEdgePath({
   drawAntiClockwise?: boolean;
 }) {
   const isJigsawEdge = edgeIndex === 0 || edgeIndex + 1 === totalEdges;
-  const edgePath = isJigsawEdge
-    ? FLAT_EDGE
-    : getSeededRandomEdgePath(seed + edgeIndex + rotation);
-
-  const renderCoordinatesWithTransforms = (coordinates: Coordinates) => {
-    const maybeTranslated = drawAntiClockwise
-      ? translate(coordinates, [0, 100])
-      : coordinates;
-    const rotated = rotateClockwise(
-      maybeTranslated,
-      drawAntiClockwise ? (rotation + 2) % 4 : rotation,
-    );
-    return scaleForBoundingBox(rotated).join(',');
-  };
+  const { edgePath, flipped } = isJigsawEdge
+    ? { edgePath: FLAT_EDGE, flipped: false }
+    : getSeededRandomEdgePath(seed + edgeIndex + (rotation % 2) * 10000);
 
   return edgePath
     .map(
       ([command, ...params]) =>
-        `${command} ${params.map(renderCoordinatesWithTransforms).join(' ')}`,
+        `${command} ${params
+          .map((coordinates) =>
+            renderCoordinatesWithTransforms({
+              coordinates,
+              rotation,
+              drawAntiClockwise,
+              flipped,
+            }),
+          )
+          .join(' ')}`,
     )
     .join(' ');
 }
