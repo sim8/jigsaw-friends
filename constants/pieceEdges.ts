@@ -11,9 +11,14 @@ import { SvgPath } from '../types';
 export const FLAT_EDGE: SvgPath = [['L', [100, 0]]];
 
 const REGULAR_TAB_EDGE: SvgPath = [
-  ['Q', [40, 10], [45, 20]],
-  ['Q', [50, 30], [60, 30]],
-  ['Q', [70, -10], [100, 0]],
+  ['Q', [30, 10], [37, 7]],
+  ['T', [40, -5]],
+  ['Q', [38, -7], [45, -10]],
+  ['T', [48, -5]],
+  ['T', [50, 5]],
+  ['T', [100, 0]],
+  // ['L', [50, -4]],
+  // ['L', [100, 0]],
 ];
 
 export const NON_FLAT_EDGES = [REGULAR_TAB_EDGE];

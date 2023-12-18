@@ -75,6 +75,7 @@ export type JigsawSettings = {
 export type SvgCommand =
   | ['M', Coordinates]
   | ['Q', Coordinates, Coordinates]
+  | ['T', Coordinates]
   | ['L', Coordinates];
 
 export type SvgPath = SvgCommand[];

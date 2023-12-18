@@ -1,5 +1,5 @@
 import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
-import { Coordinates } from '../types';
+import { Coordinates, Vector } from '../types';
 
 const BOUNDING_BOX_MIDPOINT = 100 / 2;
 
@@ -32,4 +32,11 @@ export function rotateClockwise(
     default:
       return [x, y];
   }
+}
+
+export function translate(
+  [x, y]: Coordinates,
+  [xVector, yVector]: Vector,
+): Coordinates {
+  return [x + xVector, y + yVector];
 }

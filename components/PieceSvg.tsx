@@ -57,7 +57,6 @@ export default function Piece({ pieceKey, isDragging, style }: Props) {
     rowIndex,
     seed: startedAt as number,
   });
-  console.log('🚀 ~ file: PieceSvg.tsx:60 ~ Piece ~ path:', path);
 
   return (
     <PieceSvg
