@@ -6,14 +6,6 @@ import {
   translate,
 } from './coordinatesTransforms';
 
-type EdgePathParams = {
-  edgeIndex: number;
-  totalEdges: number;
-  seed: number;
-  rotation: number;
-  drawAntiClockwise?: boolean;
-};
-
 function getSeededRandomEdgePath(seed: number) {
   // TODO return seeded random item from array
   // mulberry32?
@@ -26,7 +18,13 @@ function getEdgePath({
   seed,
   rotation,
   drawAntiClockwise,
-}: EdgePathParams) {
+}: {
+  edgeIndex: number;
+  totalEdges: number;
+  seed: number;
+  rotation: number;
+  drawAntiClockwise?: boolean;
+}) {
   const isJigsawEdge = edgeIndex === 0 || edgeIndex + 1 === totalEdges;
   const edgePath = isJigsawEdge
     ? FLAT_EDGE
