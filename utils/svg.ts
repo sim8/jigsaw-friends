@@ -6,6 +6,14 @@ import {
   translate,
 } from './coordinatesTransforms';
 
+type EdgePathParams = {
+  edgeIndex: number;
+  totalEdges: number;
+  seed: number;
+  rotation: number;
+  drawAntiClockwise?: boolean;
+};
+
 function getSeededRandomEdgePath(seed: number) {
   // TODO return seeded random item from array
   // mulberry32?
@@ -17,25 +25,21 @@ function getEdgePath({
   totalEdges,
   seed,
   rotation,
-
-  translateToBottomOfBox,
-}: {
-  edgeIndex: number;
-  totalEdges: number;
-  seed: number;
-  rotation: number;
-  translateToBottomOfBox?: boolean;
-}) {
+  drawAntiClockwise,
+}: EdgePathParams) {
   const isJigsawEdge = edgeIndex === 0 || edgeIndex + 1 === totalEdges;
   const edgePath = isJigsawEdge
     ? FLAT_EDGE
     : getSeededRandomEdgePath(seed + edgeIndex + rotation);
 
   const renderCoordinatesWithTransforms = (coordinates: Coordinates) => {
-    const maybeTranslated = translateToBottomOfBox
+    const maybeTranslated = drawAntiClockwise
       ? translate(coordinates, [0, 100])
       : coordinates;
-    const rotated = rotateClockwise(maybeTranslated, rotation);
+    const rotated = rotateClockwise(
+      maybeTranslated,
+      drawAntiClockwise ? (rotation + 2) % 4 : rotation,
+    );
     return scaleForBoundingBox(rotated).join(',');
   };
 
@@ -61,73 +65,41 @@ export function getPiecePath({
   seed: number;
 }) {
   const isOdd = (colIndex + rowIndex) % 2 === 1;
-  if (isOdd) {
-    return `
-    M ${scaleForBoundingBox([0, 0]).join(',')}
-    ${getEdgePath({
-      // left
-      edgeIndex: colIndex,
-      totalEdges: columns + 1,
-      seed,
-      rotation: 1,
-      translateToBottomOfBox: true,
-    })}
-    ${getEdgePath({
-      // bottom
-      edgeIndex: rowIndex + 1,
-      totalEdges: rows + 1,
-      seed,
-      rotation: 0,
-      translateToBottomOfBox: true,
-    })}
-    ${getEdgePath({
-      // right
-      edgeIndex: colIndex + 1,
-      totalEdges: columns + 1,
-      seed,
-      rotation: 3,
-      translateToBottomOfBox: true,
-    })}
-    ${getEdgePath({
+
+  const edges = [
+    {
       // top
       edgeIndex: rowIndex,
       totalEdges: rows + 1,
-      seed,
+      rotation: 0,
+    },
+    {
+      // right
+      edgeIndex: colIndex + 1,
+      totalEdges: columns + 1,
+      rotation: 1,
+    },
+    {
+      // bottom
+      edgeIndex: rowIndex + 1,
+      totalEdges: rows + 1,
       rotation: 2,
-      translateToBottomOfBox: true,
-    })}
+    },
+    {
+      // left
+      edgeIndex: colIndex,
+      totalEdges: columns + 1,
+      rotation: 3,
+    },
+  ];
 
-   `;
+  if (isOdd) {
+    edges.reverse();
   }
   return `
-   M ${scaleForBoundingBox([0, 0]).join(',')}
-   ${getEdgePath({
-     // top
-     edgeIndex: rowIndex,
-     totalEdges: rows + 1,
-     seed,
-     rotation: 0,
-   })}
-   ${getEdgePath({
-     // right
-     edgeIndex: colIndex + 1,
-     totalEdges: columns + 1,
-     seed,
-     rotation: 1,
-   })}
-   ${getEdgePath({
-     // bottom
-     edgeIndex: rowIndex + 1,
-     totalEdges: rows + 1,
-     seed,
-     rotation: 2,
-   })}
-  ${getEdgePath({
-    // left
-    edgeIndex: colIndex,
-    totalEdges: columns + 1,
-    seed,
-    rotation: 3,
-  })}
+    M ${scaleForBoundingBox([0, 0]).join(',')}
+    ${edges
+      .map((edge) => getEdgePath({ ...edge, seed, drawAntiClockwise: isOdd }))
+      .join('\n')}
   `;
 }
