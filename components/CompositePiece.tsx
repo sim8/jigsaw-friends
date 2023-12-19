@@ -19,9 +19,25 @@ type Props = {
   onMouseDown: MouseEventHandler<HTMLDivElement>;
 };
 
-const CompositePieceWrapper = styled.div`
+const CompositePieceWrapper = styled.div<{ isHeld: boolean }>`
   position: absolute;
   pointer-events: none;
+  filter: ${({ isHeld }) =>
+    isHeld
+      ? `drop-shadow(0px 100px 50px #333)`
+      : `drop-shadow(0px 30px 10px #333)`};
+  transform: ${({ isHeld }) =>
+    isHeld ? `translate(0, -30px) scale(1.01)` : `translate(0, 0)`};
+  transition:
+    transform ${(props) => (props.isHeld ? 500 : 50)}ms,
+    filter ${(props) => (props.isHeld ? 500 : 50)}ms;
+`;
+
+const RotationWrapper = styled.div`
+  position: absolute;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
 `;
 
 const PIECE_CENTER_DEBUG_SIZE = 20;
@@ -47,13 +63,14 @@ export default function CompositePiece({
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
-  const { top, left, rotation, childPieces } = pieceState;
+  const { top, left, rotation, childPieces, heldBy } = pieceState;
 
   const boundingBoxWidthOffset = pieceWidth / PIECE_BOUNDING_BOX_SIZE_FACTOR;
   const boundingBoxHeightOffset = pieceHeight / PIECE_BOUNDING_BOX_SIZE_FACTOR;
 
   return (
     <CompositePieceWrapper
+      isHeld={!!heldBy}
       onMouseDown={(e) => {
         if (e.buttons == 1) {
           onMouseDown(e);
@@ -65,48 +82,54 @@ export default function CompositePiece({
         width: pieceWidth,
         left: left - pieceWidth / 2,
         top: top - pieceHeight / 2,
-        transform: `rotate(${rotation}deg)`,
       }}
     >
-      <PieceSvg
-        pieceKey={pieceKey}
-        isDragging={isDragging}
+      <RotationWrapper
         style={{
-          top: -boundingBoxHeightOffset,
-          left: -boundingBoxWidthOffset,
+          // rotations + drop-shadows need to be on separate elements
+          transform: `rotate(${rotation}deg)`,
         }}
-      />
-      {childPieces &&
-        Object.keys(childPieces).map((childKey) => {
-          const childVector = getSolutionPieceVector({
-            pieceAKey: pieceKey,
-            pieceBKey: childKey,
-            rows,
-            columns,
-            jigsawWidth,
-            jigsawHeight,
-          });
-          return (
-            <PieceSvg
-              key={childKey}
-              pieceKey={childKey}
-              isDragging={isDragging}
-              style={{
-                left: childVector[0] - boundingBoxWidthOffset,
-                top: childVector[1] - boundingBoxHeightOffset,
-              }}
-            />
-          );
-        })}
-
-      {debugEnabled && (
-        <PieceCenterDebug
+      >
+        <PieceSvg
+          pieceKey={pieceKey}
+          isDragging={isDragging}
           style={{
-            left: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
-            top: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
+            top: -boundingBoxHeightOffset,
+            left: -boundingBoxWidthOffset,
           }}
         />
-      )}
+        {childPieces &&
+          Object.keys(childPieces).map((childKey) => {
+            const childVector = getSolutionPieceVector({
+              pieceAKey: pieceKey,
+              pieceBKey: childKey,
+              rows,
+              columns,
+              jigsawWidth,
+              jigsawHeight,
+            });
+            return (
+              <PieceSvg
+                key={childKey}
+                pieceKey={childKey}
+                isDragging={isDragging}
+                style={{
+                  left: childVector[0] - boundingBoxWidthOffset,
+                  top: childVector[1] - boundingBoxHeightOffset,
+                }}
+              />
+            );
+          })}
+
+        {debugEnabled && (
+          <PieceCenterDebug
+            style={{
+              left: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
+              top: `calc(50% - ${PIECE_CENTER_DEBUG_SIZE / 2}px)`,
+            }}
+          />
+        )}
+      </RotationWrapper>
     </CompositePieceWrapper>
   );
 }
