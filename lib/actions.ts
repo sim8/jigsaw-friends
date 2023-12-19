@@ -156,12 +156,17 @@ export function pickUpPiece({
 }) {
   const { database } = getFirebase();
   return runTransaction(
-    ref(database, `games/${gameKey}/jigsaw/${pieceKey}/heldBy`),
-    (currentData?: Uid) => {
-      if (currentData) {
+    ref(database, `games/${gameKey}/jigsaw/${pieceKey}`),
+    (currentData: PieceState): PieceState | undefined => {
+      if (currentData.heldBy) {
         return;
       }
-      return uid;
+      return {
+        ...currentData,
+        heldBy: uid,
+        // TODO not sure if we can do better typing here
+        lastDragged: serverTimestamp() as unknown as number,
+      };
     },
   );
 }

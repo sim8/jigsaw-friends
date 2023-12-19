@@ -12,6 +12,7 @@ export type PieceState = {
   rotation: number;
   heldBy?: Uid;
   childPieces?: Record<PieceKey, true>;
+  lastDragged?: number;
 };
 
 export type JigsawState = Record<PieceKey, PieceState>;
