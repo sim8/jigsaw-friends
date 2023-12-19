@@ -11,6 +11,7 @@ import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
 import { COLORS } from '../constants/colors';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
+import { condenseTimestampForZindex } from '../utils/misc';
 
 type Props = {
   pieceKey: PieceKey;
@@ -47,7 +48,7 @@ export default function CompositePiece({
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
-  const { top, left, rotation, childPieces } = pieceState;
+  const { top, left, rotation, childPieces, lastDragged } = pieceState;
 
   const boundingBoxWidthOffset = pieceWidth / PIECE_BOUNDING_BOX_SIZE_FACTOR;
   const boundingBoxHeightOffset = pieceHeight / PIECE_BOUNDING_BOX_SIZE_FACTOR;
@@ -66,6 +67,9 @@ export default function CompositePiece({
         left: left - pieceWidth / 2,
         top: top - pieceHeight / 2,
         transform: `rotate(${rotation}deg)`,
+        zIndex: lastDragged
+          ? condenseTimestampForZindex(lastDragged)
+          : undefined,
       }}
     >
       <PieceSvg

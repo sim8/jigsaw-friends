@@ -9,3 +9,14 @@ export function mulberry32(a: number) {
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 }
+
+export function condenseTimestampForZindex(timestamp: number) {
+  /**
+   * max z-index is 2147483647
+   * timestamps are 1702976218202
+   */
+  // limitations of this - 10th second fidelity
+  // values last 3 years
+  //                                   2147483647
+  return Math.floor(timestamp / 100) % 1000000000;
+}
