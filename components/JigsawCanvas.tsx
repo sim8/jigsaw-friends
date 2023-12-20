@@ -5,6 +5,7 @@ import useGame from '../hooks/useGame';
 import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
 import ScaledCanvas from './ScaledCanvas';
+import useSyncCursorPos from '../hooks/useSyncCursorPos';
 
 export default function JigsawCanvas() {
   const { jigsaw: jigsawState } = useGame();
@@ -19,6 +20,8 @@ export default function JigsawCanvas() {
     onDrag,
     onMouseDown,
   } = usePieceUpdates({ canvasRef });
+
+  const syncCursorPos = useSyncCursorPos({ canvasRef });
 
   if (!jigsawState) {
     // TODO maybe enforce this through context?
@@ -56,6 +59,7 @@ export default function JigsawCanvas() {
         if (dragPieceInfo) {
           onDrag(e);
         }
+        syncCursorPos(e);
       }}
     >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
