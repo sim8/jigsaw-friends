@@ -12,6 +12,8 @@ import { COLORS } from '../constants/colors';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
 
+const HELD_PIECE_MINIMUM_OFFSET = 15;
+
 type Props = {
   pieceKey: PieceKey;
   pieceState: PieceState;
@@ -31,7 +33,7 @@ function getTransform({ isHeld, pieceWidth }: CompositePieceWrapperProps) {
   if (!isHeld) {
     return 'translate(0, 0)';
   }
-  const offsetY = 15 + pieceWidth / 123;
+  const offsetY = HELD_PIECE_MINIMUM_OFFSET + pieceWidth / 123;
   return `translate(0, -${offsetY}px) scale(1.01)`;
 }
 
@@ -73,7 +75,6 @@ export default function CompositePiece({
   const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
 
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
-  console.log('🚀 ~ file: CompositePiece.tsx:64 ~ pieceWidth:', pieceWidth);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
   const { top, left, rotation, childPieces, heldBy } = pieceState;
