@@ -11,3 +11,7 @@ export const PIECE_SNAP_ROTATION_THRESHOLD = 15;
 
 // Piece rendering
 export const PIECE_BOUNDING_BOX_SIZE_FACTOR = 2; // bounding box is X times taller/wider than actual piece
+
+// Animation
+export const PIECE_PICK_UP_ANIMATION_TIME = 500;
+export const PIECE_PUT_DOWN_ANIMATION_TIME = 50;

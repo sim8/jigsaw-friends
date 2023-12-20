@@ -7,7 +7,11 @@ import {
   getSolutionPieceVector,
 } from '../utils/pieces';
 import styled from 'styled-components';
-import { PIECE_BOUNDING_BOX_SIZE_FACTOR } from '../constants/uiConfig';
+import {
+  PIECE_BOUNDING_BOX_SIZE_FACTOR,
+  PIECE_PICK_UP_ANIMATION_TIME,
+  PIECE_PUT_DOWN_ANIMATION_TIME,
+} from '../constants/uiConfig';
 import { COLORS } from '../constants/colors';
 import useDebug from '../hooks/useDebug';
 import useGame from '../hooks/useGame';
@@ -37,14 +41,17 @@ function getTransform({ isHeld, pieceWidth }: CompositePieceWrapperProps) {
   return `translate(0, -${offsetY}px) scale(1.01)`;
 }
 
+const getAnimationTime = ({ isHeld }: CompositePieceWrapperProps) =>
+  `${isHeld ? PIECE_PICK_UP_ANIMATION_TIME : PIECE_PUT_DOWN_ANIMATION_TIME}ms`;
+
 const CompositePieceWrapper = styled.div<CompositePieceWrapperProps>`
   position: absolute;
   pointer-events: none;
   filter: ${getFilter};
   transform: ${getTransform};
   transition:
-    transform ${(props) => (props.isHeld ? 500 : 50)}ms,
-    filter ${(props) => (props.isHeld ? 500 : 50)}ms;
+    transform ${getAnimationTime},
+    filter ${getAnimationTime};
 `;
 
 const RotationWrapper = styled.div`
