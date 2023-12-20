@@ -5,6 +5,7 @@ import { useState } from 'react';
 import FormControl from './FormControl';
 import Image from 'next/image';
 import { StyledButton } from './styled/Button';
+import Select from './styled/Select';
 import JigsawImageSelectionModal from './JigsawImageSelectionModal';
 import { getBuiltInImagePath } from '../utils/urls';
 import { setJigsawColumnsRows, setJigsawUrl } from '../lib/actions';
@@ -56,7 +57,7 @@ export default function JigsawSettings() {
         </ImagePreview>
       </FormControl>
       <FormControl title="Pieces" formName="pieces">
-        <select
+        <Select
           name="pieces"
           value={columnsRowsKey}
           onChange={(e) => {
@@ -72,7 +73,7 @@ export default function JigsawSettings() {
               </option>
             );
           })}
-        </select>
+        </Select>
       </FormControl>
       {modalOpen && (
         <JigsawImageSelectionModal

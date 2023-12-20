@@ -30,7 +30,7 @@ const PieceSvg = styled.svg<{
   ${({ debugEnabled }) =>
     debugEnabled &&
     `
-  outline: 1px solid red;
+  outline: 10px solid red;
   `}
 `;
 
