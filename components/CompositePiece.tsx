@@ -19,15 +19,27 @@ type Props = {
   onMouseDown: MouseEventHandler<HTMLDivElement>;
 };
 
-const CompositePieceWrapper = styled.div<{ isHeld: boolean }>`
+type CompositePieceWrapperProps = { isHeld: boolean; pieceWidth: number };
+
+function getFilter({ isHeld, pieceWidth }: CompositePieceWrapperProps) {
+  const offsetY = pieceWidth / (isHeld ? 18 : 60);
+  const standardDeviation = pieceWidth / (isHeld ? 37 : 185);
+  return `drop-shadow(0px ${offsetY}px ${standardDeviation}px #333)`;
+}
+
+function getTransform({ isHeld, pieceWidth }: CompositePieceWrapperProps) {
+  if (!isHeld) {
+    return 'translate(0, 0)';
+  }
+  const offsetY = 15 + pieceWidth / 123;
+  return `translate(0, -${offsetY}px) scale(1.01)`;
+}
+
+const CompositePieceWrapper = styled.div<CompositePieceWrapperProps>`
   position: absolute;
   pointer-events: none;
-  filter: ${({ isHeld }) =>
-    isHeld
-      ? `drop-shadow(0px 100px 50px #333)`
-      : `drop-shadow(0px 30px 10px #333)`};
-  transform: ${({ isHeld }) =>
-    isHeld ? `translate(0, -30px) scale(1.01)` : `translate(0, 0)`};
+  filter: ${getFilter};
+  transform: ${getTransform};
   transition:
     transform ${(props) => (props.isHeld ? 500 : 50)}ms,
     filter ${(props) => (props.isHeld ? 500 : 50)}ms;
@@ -61,6 +73,7 @@ export default function CompositePiece({
   const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
 
   const pieceWidth = getPieceWidth(jigsawWidth, columns);
+  console.log('🚀 ~ file: CompositePiece.tsx:64 ~ pieceWidth:', pieceWidth);
   const pieceHeight = getPieceHeight(jigsawHeight, rows);
 
   const { top, left, rotation, childPieces, heldBy } = pieceState;
@@ -70,6 +83,7 @@ export default function CompositePiece({
 
   return (
     <CompositePieceWrapper
+      pieceWidth={pieceWidth}
       isHeld={!!heldBy}
       onMouseDown={(e) => {
         if (e.buttons == 1) {
