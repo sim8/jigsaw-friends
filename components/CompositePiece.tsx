@@ -40,7 +40,7 @@ const RotationWrapper = styled.div`
   width: 100%;
 `;
 
-const PIECE_CENTER_DEBUG_SIZE = 20;
+const PIECE_CENTER_DEBUG_SIZE = 100;
 
 const PieceCenterDebug = styled.div`
   position: absolute;
