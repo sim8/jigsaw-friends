@@ -4,6 +4,7 @@ import useUser from './useUser';
 import { getMousePosWithinElement } from '../utils/dom';
 import { throttle } from '../utils/misc';
 import { SYNC_CURSOR_THROTTLE_INTERVAL } from '../constants/uiConfig';
+import { setCursorPos } from '../lib/actions';
 
 export default function useSyncCursorPos({
   canvasRef,
@@ -24,7 +25,12 @@ export default function useSyncCursorPos({
         return;
       }
       const { top, left } = getMousePosWithinElement(e, canvasRef.current);
-      console.log(top, left, gameKey, user.uid);
+      setCursorPos({
+        top,
+        left,
+        gameKey,
+        uid: user.uid,
+      });
     },
     [gameKey, user.uid, canvasRef],
   );
