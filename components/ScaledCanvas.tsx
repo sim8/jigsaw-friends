@@ -25,11 +25,30 @@ const Canvas = styled.div`
   left: 50%;
 `;
 
+const UnscaledOverlay = styled.div`
+  position: absolute;
+  pointer-events: none;
+
+  width: ${CANVAS_WIDTH}px;
+  height: ${CANVAS_HEIGHT}px;
+
+  outline: 4px solid green;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   canvasRef: RefObject<HTMLDivElement>;
+  unscaledOverlayChildren: React.ReactNode;
 };
 
-export default function ScaledCanvas({ canvasRef, ...props }: Props) {
+export default function ScaledCanvas({
+  canvasRef,
+  unscaledOverlayChildren,
+  ...props
+}: Props) {
   const [scaleFactor, setScaleFactor] = useState(0.9);
 
   const adjustScaleFactor = useCallback((entries: ResizeObserverEntry[]) => {
@@ -52,6 +71,14 @@ export default function ScaledCanvas({ canvasRef, ...props }: Props) {
         }}
         {...props}
       />
+      <UnscaledOverlay
+        style={{
+          width: CANVAS_WIDTH * scaleFactor,
+          height: CANVAS_HEIGHT * scaleFactor,
+        }}
+      >
+        {unscaledOverlayChildren}
+      </UnscaledOverlay>
     </CanvasWrapper>
   );
 }
