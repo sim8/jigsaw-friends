@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import useGame from '../hooks/useGame';
 import { setName, startGame } from '../lib/actions';
 import { getGameLink } from '../utils/urls';
@@ -7,8 +7,8 @@ import { Title } from './sharedstyles';
 import Button from './styled/Button';
 import styled from 'styled-components';
 import Input from './styled/Input';
-import { COLOR_OPTIONS } from '../constants/colors';
 import JigsawSettings from './JigsawSettings';
+import useLiveUsers from '../hooks/useLiveUsers';
 
 const LobbyContents = styled.div`
   display: flex;
@@ -31,16 +31,10 @@ const PlayerCardWrapper = styled.div`
 `;
 
 export default function Lobby() {
-  const { gameKey, liveUsers, host, jigsawWidth, jigsawHeight } = useGame();
-  const { user } = useUser();
+  const { gameKey, host, jigsawWidth, jigsawHeight } = useGame();
+  const { orderedLiveUserIds, liveUsersWithColors } = useLiveUsers();
 
-  const orderedLiveUserIds = useMemo(
-    () =>
-      Object.entries(liveUsers)
-        .sort(([, a], [, b]) => a.joinedAt - b.joinedAt)
-        .map(([uid]) => uid),
-    [liveUsers],
-  );
+  const { user } = useUser();
 
   const copyInviteLink = useCallback(() => {
     const link = getGameLink(gameKey, true);
@@ -56,7 +50,7 @@ export default function Lobby() {
             {orderedLiveUserIds.map((uid, index) => (
               <PlayerCardWrapper
                 key={uid}
-                color={COLOR_OPTIONS[index % COLOR_OPTIONS.length]}
+                color={liveUsersWithColors[uid].color}
               >
                 {user && user.uid === uid ? (
                   <Input
@@ -64,13 +58,13 @@ export default function Lobby() {
                     maxLength={50}
                     autoFocus={true}
                     placeholder="Type your name!"
-                    value={liveUsers[uid].name || ''}
+                    value={liveUsersWithColors[uid].name || ''}
                     onChange={(e) =>
                       setName({ gameKey, uid: user.uid, name: e.target.value })
                     }
                   />
                 ) : (
-                  liveUsers[uid].name || `Player ${index + 1}`
+                  liveUsersWithColors[uid].name || `Player ${index + 1}`
                 )}
               </PlayerCardWrapper>
             ))}
