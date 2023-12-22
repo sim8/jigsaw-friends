@@ -15,3 +15,6 @@ export const PIECE_BOUNDING_BOX_SIZE_FACTOR = 2; // bounding box is X times tall
 // Animation
 export const PIECE_PICK_UP_ANIMATION_TIME = 500;
 export const PIECE_PUT_DOWN_ANIMATION_TIME = 50;
+
+// Firebase read/write
+export const SYNC_CURSOR_THROTTLE_INTERVAL = 100;

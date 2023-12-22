@@ -132,6 +132,24 @@ export function joinGame({ gameKey, uid }: { gameKey: GameKey; uid: string }) {
   });
 }
 
+export function setCursorPos({
+  gameKey,
+  uid,
+  left,
+  top,
+}: {
+  gameKey: GameKey;
+  uid: string;
+  left: number;
+  top: number;
+}) {
+  const { database } = getFirebase();
+  update(ref(database), {
+    [`games/${gameKey}/liveUsersCursorPos/${uid}/top`]: top,
+    [`games/${gameKey}/liveUsersCursorPos/${uid}/left`]: left,
+  });
+}
+
 export function setName({
   gameKey,
   uid,
