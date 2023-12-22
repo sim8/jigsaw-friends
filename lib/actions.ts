@@ -145,8 +145,8 @@ export function setCursorPos({
 }) {
   const { database } = getFirebase();
   update(ref(database), {
-    [`games/${gameKey}/liveUsers/${uid}/top`]: top,
-    [`games/${gameKey}/liveUsers/${uid}/left`]: left,
+    [`games/${gameKey}/liveUsersCursorPos/${uid}/top`]: top,
+    [`games/${gameKey}/liveUsersCursorPos/${uid}/left`]: left,
   });
 }
 

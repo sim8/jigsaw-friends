@@ -32,11 +32,12 @@ export type GameKey = string;
 // Null / empty objects are not stored in Firebase
 export type UserState = {
   joinedAt: number;
-  cursorPos?: {
-    top: number;
-    left: number;
-  };
   name?: string;
+};
+
+type cursorPos = {
+  top: number;
+  left: number;
 };
 
 // Null / empty objects are not stored in Firebase
@@ -44,6 +45,7 @@ export type Game = {
   host: Uid;
   startedAt?: number;
   liveUsers: Record<string, UserState>;
+  liveUsersCursorPos?: Record<string, cursorPos>;
   jigsaw?: JigsawState;
   settings: JigsawSettings;
 };
