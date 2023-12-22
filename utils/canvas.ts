@@ -8,7 +8,7 @@ export function getOverlayPositioningStyles({
   left: number;
 }) {
   return {
-    top: `${top / CANVAS_HEIGHT}%`,
-    left: `${left / CANVAS_WIDTH}%`,
+    top: `${(top / CANVAS_HEIGHT) * 100}%`,
+    left: `${(left / CANVAS_WIDTH) * 100}%`,
   };
 }

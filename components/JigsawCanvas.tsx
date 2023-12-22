@@ -6,6 +6,7 @@ import usePieceUpdates from '../hooks/usePieceUpdates';
 import useUser from '../hooks/useUser';
 import ScaledCanvas from './ScaledCanvas';
 import useSyncCursorPos from '../hooks/useSyncCursorPos';
+import CanvasUnscaledOverlay from './CanvasUnscaledOverlay';
 
 export default function JigsawCanvas() {
   const { jigsaw: jigsawState } = useGame();
@@ -61,6 +62,7 @@ export default function JigsawCanvas() {
         }
         syncCursorPos(e);
       }}
+      unscaledOverlayChildren={<CanvasUnscaledOverlay />}
     >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
