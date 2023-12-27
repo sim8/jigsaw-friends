@@ -16,8 +16,9 @@ export default function JigsawCanvas() {
     dragPieceInfo,
     setRotatingDirection,
     onCancelDrag,
-    onDrag,
-    onMouseDown,
+    onDragStart,
+    onDragOver,
+    onDrop,
   } = usePieceUpdates({ canvasRef });
 
   if (!jigsawState) {
@@ -50,13 +51,9 @@ export default function JigsawCanvas() {
       onKeyUp={() => {
         setRotatingDirection(null);
       }}
-      onMouseUp={() => onCancelDrag(true)}
-      onMouseLeave={() => onCancelDrag()}
-      onMouseMove={(e) => {
-        if (dragPieceInfo) {
-          onDrag(e);
-        }
-      }}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragLeave={() => onCancelDrag(false)}
     >
       {Object.entries(jigsawState).map(([pieceKey, pieceState]) => {
         return (
@@ -64,9 +61,10 @@ export default function JigsawCanvas() {
             key={pieceKey}
             pieceKey={pieceKey}
             pieceState={pieceState}
-            onMouseDown={(e) => {
-              onMouseDown(e, pieceKey, pieceState);
+            onDragStart={(e) => {
+              onDragStart(e, pieceKey, pieceState);
             }}
+            onDragEnd={() => onCancelDrag(false)}
             isDragging={draggingPieceKey === pieceKey}
           />
         );

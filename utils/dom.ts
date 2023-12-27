@@ -1,7 +1,7 @@
-import { MouseEvent } from 'react';
+import { DragEvent } from 'react';
 
 export function getMousePosWithinElement(
-  e: MouseEvent<HTMLDivElement>,
+  e: DragEvent<HTMLDivElement>,
   el: HTMLElement,
 ) {
   const canvasRect = el.getBoundingClientRect();

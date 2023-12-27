@@ -1,5 +1,4 @@
 import { PieceKey, PieceState } from '../types';
-import { MouseEventHandler } from 'react';
 import PieceSvg from './PieceSvg';
 import {
   getPieceHeight,
@@ -22,8 +21,7 @@ type Props = {
   pieceKey: PieceKey;
   pieceState: PieceState;
   isDragging: boolean;
-  onMouseDown: MouseEventHandler<HTMLDivElement>;
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
 type CompositePieceWrapperProps = { isHeld: boolean; pieceWidth: number };
 
@@ -76,7 +74,7 @@ export default function CompositePiece({
   pieceKey,
   pieceState,
   isDragging,
-  onMouseDown,
+  ...divProps
 }: Props) {
   const { debugEnabled } = useDebug();
   const { rows, columns, jigsawWidth, jigsawHeight } = useGame();
@@ -93,11 +91,8 @@ export default function CompositePiece({
     <CompositePieceWrapper
       pieceWidth={pieceWidth}
       isHeld={!!heldBy}
-      onMouseDown={(e) => {
-        if (e.buttons == 1) {
-          onMouseDown(e);
-        }
-      }}
+      draggable={!heldBy}
+      {...divProps}
       style={{
         // top/left relate to center of piece
         height: pieceHeight,

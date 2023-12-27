@@ -1,5 +1,5 @@
 import {
-  MouseEvent,
+  DragEvent,
   RefObject,
   useCallback,
   useEffect,
@@ -54,33 +54,36 @@ export default function usePieceUpdates({
     }
   };
 
-  const onCancelDrag = async (didDrop?: boolean) => {
-    let didJoin = false;
-    if (!dragPieceInfo) {
-      return;
-    }
-    if (didDrop) {
-      const joinablePiece = getJoinablePiece();
-      if (joinablePiece) {
-        const transactionResult = await joinPiece({
-          gameKey,
-          heldPieceKey: dragPieceInfo.draggingPieceKey,
-          joiningPieceKey: joinablePiece,
-        });
-        didJoin = transactionResult.committed;
+  const onCancelDrag = useCallback(
+    async (didDrop: boolean) => {
+      let didJoin = false;
+      if (!dragPieceInfo) {
+        return;
       }
-    }
-    if (!didJoin) {
-      releasePiece({
-        gameKey,
-        pieceKey: dragPieceInfo.draggingPieceKey,
-        uid: user.uid,
-      });
-    }
-    setDragPieceInfo(null);
-    setRotatingDirection(null);
-    clearRotationInterval();
-  };
+      if (didDrop) {
+        const joinablePiece = getJoinablePiece();
+        if (joinablePiece) {
+          const transactionResult = await joinPiece({
+            gameKey,
+            heldPieceKey: dragPieceInfo.draggingPieceKey,
+            joiningPieceKey: joinablePiece,
+          });
+          didJoin = transactionResult.committed;
+        }
+      }
+      if (!didJoin) {
+        releasePiece({
+          gameKey,
+          pieceKey: dragPieceInfo.draggingPieceKey,
+          uid: user.uid,
+        });
+      }
+      setDragPieceInfo(null);
+      setRotatingDirection(null);
+      clearRotationInterval();
+    },
+    [dragPieceInfo, gameKey, getJoinablePiece, user.uid],
+  );
 
   const { draggingPieceKey } = dragPieceInfo || {};
 
@@ -102,11 +105,12 @@ export default function usePieceUpdates({
     }
   }, [rotatingDirection, draggingPieceKey, gameKey]);
 
-  const onDrag = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
+  const onDragOver = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
       if (!dragPieceInfo || !canvasRef.current) {
         return;
       }
+      e.preventDefault();
       const { top, left } = getMousePosWithinElement(e, canvasRef.current);
       const pieceTop = top - dragPieceInfo.initialPieceMouseOffsetY;
       const pieceLeft = left - dragPieceInfo.initialPieceMouseOffsetX;
@@ -127,9 +131,9 @@ export default function usePieceUpdates({
     [canvasRef, dragPieceInfo, gameKey],
   );
 
-  const onMouseDown = useCallback(
+  const onDragStart = useCallback(
     (
-      e: MouseEvent<HTMLDivElement>,
+      e: DragEvent<HTMLDivElement>,
       pieceKey: PieceKey,
       pieceState: PieceState,
     ) => {
@@ -161,11 +165,20 @@ export default function usePieceUpdates({
     [canvasRef, gameKey, user.uid],
   );
 
+  const onDrop = useCallback(
+    (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      onCancelDrag(true);
+    },
+    [onCancelDrag],
+  );
+
   return {
-    onMouseDown,
-    onDrag,
+    onDragOver,
     onCancelDrag,
+    onDrop,
     dragPieceInfo,
     setRotatingDirection,
+    onDragStart,
   };
 }
